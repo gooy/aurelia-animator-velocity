@@ -72,6 +72,10 @@ export class SettingsPage{
     this.updateLeaveAnimation();
   }
 
+  leaveDurationChanged(newValue,oldValue){
+    this.updateLeaveAnimation();
+  }
+
   updateLeaveAnimation() {
     this.animator.leaveAnimation = {properties:this.selectedLeaveAnimation,options:{easing:this.selectedLeaveEasing,duration:this.leaveDuration}};
   }

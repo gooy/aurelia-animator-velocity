@@ -22,7 +22,7 @@ var _dirs = gulp.pkg.directories;
 gulp.task('demo-build-system', function () {
   return gulp.src(dirs.lib+"/app/**/*.js")
   .pipe(plumber())
-  .pipe(changed(dirs.build, {extension: '.js'}))
+  //.pipe(changed(dirs.build, {extension: '.js'}))
   .pipe(sourcemaps.init())
   .pipe(babel(assign({}, compilerOptions, {modules:'system'})))
   .pipe(sourcemaps.write("."))
