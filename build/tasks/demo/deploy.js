@@ -10,6 +10,7 @@ var dirs = gulp.pkg.demo.directories;
  */
 gulp.task('demo-deploy-copy', function() {
   fse.copySync(dirs.build,dirs.deploy);
+  fse.copySync("config.js",dirs.deploy+"/config.js");
 });
 
 /**

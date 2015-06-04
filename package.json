@@ -106,18 +106,12 @@
       "aurelia-router": "github:aurelia/router@^0.8.0",
       "babel": "npm:babel-core@^5.1.13",
       "babel-runtime": "npm:babel-runtime@^5.1.13",
-      "bootstrap": "github:twbs/bootstrap@^3.3.4",
       "core-js": "npm:core-js@^0.9.5",
       "css": "github:systemjs/plugin-css@^0.1.9",
       "font-awesome": "npm:font-awesome@^4.3.0",
       "gooy/aurelia-markdown": "github:gooy/aurelia-markdown@^0.0.1",
       "gooy/aurelia-smooth-scroll": "github:gooy/aurelia-smooth-scroll@0.0.1",
       "text": "github:systemjs/plugin-text@^0.0.2"
-    },
-    "overrides": {
-      "github:daepark/JSOL@master": {
-        "main": "jsol.js"
-      }
     }
   }
 }
