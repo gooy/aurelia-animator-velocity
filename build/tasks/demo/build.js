@@ -14,7 +14,6 @@ var assign = Object.assign || require('object.assign');
 var glob = Promise.promisifyAll(require('glob'));
 var del = require('del');
 var vinylPaths = require('vinyl-paths');
-//var RSVP = require("rsvp");
 
 var dirs = gulp.pkg.demo.directories;
 var _dirs = gulp.pkg.directories;

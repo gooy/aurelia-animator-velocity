@@ -28,9 +28,6 @@ export class VelocityAnimator {
 
   constructor(){
     this.isAnimating = false;
-
-    //setup method aliases
-    this.animate = this.move;
   }
 
   //--------------------------------- Aurelia Animator interface
@@ -44,7 +41,7 @@ export class VelocityAnimator {
    *
    * @returns {Promise} resolved when animation is complete
    */
-  move(element,props,options) {
+  animate(element,props,options) {
     this.isAnimating = true;
     return new Promise(resolve=>{
       var defaults = {
