@@ -26,8 +26,10 @@
     "test": "npm run jshint",
     "jshint": "jshint src task test gulpfile.js"
   },
-  "dependencies": {},
+  "dependencies": {
+  },
   "devDependencies": {
+    "bluebird": "^2.9.27",
     "gulp-gh-pages": "^0.5.2",
     "beautiful-docs": "^1.0.3",
     "child-process-promise": "^1.1.0",
@@ -106,7 +108,7 @@
       "aurelia-router": "github:aurelia/router@^0.8.0",
       "babel": "npm:babel-core@^5.1.13",
       "babel-runtime": "npm:babel-runtime@^5.1.13",
-      "core-js": "npm:core-js@^0.9.5",
+      "core-js": "npm:core-js@^0.9.4",
       "css": "github:systemjs/plugin-css@^0.1.9",
       "font-awesome": "npm:font-awesome@^4.3.0",
       "gooy/aurelia-markdown": "github:gooy/aurelia-markdown@^0.0.1",

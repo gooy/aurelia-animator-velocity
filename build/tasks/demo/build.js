@@ -1,4 +1,6 @@
 var gulp = require('gulp');
+var Promise = require("bluebird");
+
 var runSequence = require('run-sequence');
 var changed = require('gulp-changed');
 var copy = require('gulp-copy');
@@ -9,9 +11,10 @@ var fse = require('fs-extra');
 var sourcemaps = require('gulp-sourcemaps');
 var compilerOptions = require('../../babel-options');
 var assign = Object.assign || require('object.assign');
-var glob = require('glob');
+var glob = Promise.promisifyAll(require('glob'));
 var del = require('del');
 var vinylPaths = require('vinyl-paths');
+//var RSVP = require("rsvp");
 
 var dirs = gulp.pkg.demo.directories;
 var _dirs = gulp.pkg.directories;
@@ -60,9 +63,11 @@ gulp.task('demo-build-assets', function (done) {
 /**
  * Copies only the needed files from jspm_packages into the deploy directory
  */
-gulp.task('demo-build-jspm-packages', function () {
+gulp.task('demo-build-jspm-packages', function (done) {
   var patterns = [
+  	"jspm_packages/github/webcomponents/webcomponentsjs@*.js",
     "jspm_packages/github/webcomponents/webcomponentsjs@*/HTMLImports.min.js",
+    "jspm_packages/github/aurelia/html-template-element@*.js",
     "jspm_packages/github/aurelia/html-template-element@*/HTMLTemplateElement.js",
     "jspm_packages/github/aurelia/html-template-element@*/HTMLTemplateElement.min.js",
     "jspm_packages/github/gooy/aurelia-dialog@*/*.html",
@@ -72,20 +77,26 @@ gulp.task('demo-build-jspm-packages', function () {
     "jspm_packages/*.map"
   ];
 
-  var promises = [];
-  for(var i = 0, l = patterns.length; i < l; i++){
-    var pattern = patterns[i];
-    var promise =  new Promise(function(resolve){
-      glob(pattern, {}, function (er, files){
-        for(var i2 = 0, l2 = files.length; i2 < l2; i2++){
-          var file = files[i2];
-          fse.copy(file, _dirs.deploy+"/"+file,resolve);
-        }
-      });
-    });
-    promises.push(promise);
-  }
-  return Promise.all(promises);
+  var promises = patterns.map(function(pattern){      
+      return new Promise(function(resolve,reject){
+        return glob(pattern, {}, function (er, files){
+          if(er) {
+            console.error(er);
+            reject(er)
+          }
+          for(var i2 = 0, l2 = files.length; i2 < l2; i2++){
+            var file = files[i2];
+            fse.copySync(file, _dirs.deploy+"/"+file);
+          }
+          resolve();
+        });
+      })
+  });
+
+  Promise.all(promises).then(function(){
+    done();
+  });
+
 });
 
 /**
