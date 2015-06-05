@@ -1,0 +1,1 @@
+System.register([],function(t){"use strict";var e;return{setters:[],execute:function(){e={transitions:["fadeIn","fadeOut"]},t("config",e)}}});

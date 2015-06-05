@@ -1,0 +1,1 @@
+{"version":3,"sources":["nav-bar.js"],"names":[],"mappings":";;;gBAEa,MAAM;;;;;;;;;;mCAFX,QAAQ;;;AAEH,YAAM;;;iBAAN,MAAM;gCAAN,MAAM;;;;;8BAAN,MAAM;;uBAChB,QAAQ;;mBAAU,IAAI;;;;;eADZ,MAAM;;;wBAAN,MAAM","file":"nav-bar.js","sourceRoot":"/source/","sourcesContent":["import {bindable} from 'aurelia-framework';\r\n\r\nexport class NavBar {\r\n  @bindable router = null;\r\n}\r\n"]}
