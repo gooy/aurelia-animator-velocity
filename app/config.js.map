@@ -1,1 +1,0 @@
-{"version":3,"sources":["config.js"],"names":[],"mappings":";;;QACW,MAAM;;;;AAAN,kBAAM,GAAG;AAChB,2BAAW,EAAE,CAAC,QAAQ,EAAC,SAAS,CAAC;aACpC;;8BAFU,MAAM","file":"config.js","sourceRoot":"/source/","sourcesContent":["\nexport var config = {\n    transitions: [\"fadeIn\",\"fadeOut\"]\n};\n"]}
