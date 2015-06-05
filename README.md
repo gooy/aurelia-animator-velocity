@@ -86,6 +86,6 @@ To run the demo website, first ensure that you have followed the steps above in 
 1. Run the watch task which will start a server and watch for changes in the `demo/src` directory
 
     ```shell
-    gulp watch
+    gulp demo-watch
     ```
-2. You can now see the demo website at [http://localhost:9000](http://localhost:9000)
+2. The demo website can now be seen at [http://localhost:9000](http://localhost:9000)
