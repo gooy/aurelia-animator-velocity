@@ -26,13 +26,11 @@ System.register(['velocity', 'jsol'], function (_export) {
           this.leaveAnimation = { properties: 'fadeOut', options: { duration: 200 } };
 
           this.isAnimating = false;
-
-          this.animate = this.move;
         }
 
         _createClass(VelocityAnimator, [{
-          key: 'move',
-          value: function move(element, props, options) {
+          key: 'animate',
+          value: function animate(element, props, options) {
             var _this = this;
 
             this.isAnimating = true;
