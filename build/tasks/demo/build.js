@@ -1,6 +1,4 @@
 var gulp = require('gulp');
-var Promise = require("bluebird");
-
 var runSequence = require('run-sequence');
 var changed = require('gulp-changed');
 var copy = require('gulp-copy');
@@ -11,7 +9,7 @@ var fse = require('fs-extra');
 var sourcemaps = require('gulp-sourcemaps');
 var compilerOptions = require('../../babel-options');
 var assign = Object.assign || require('object.assign');
-var glob = Promise.promisifyAll(require('glob'));
+var glob = require('glob');
 var del = require('del');
 var vinylPaths = require('vinyl-paths');
 
@@ -76,7 +74,7 @@ gulp.task('demo-build-jspm-packages', function (done) {
     "jspm_packages/*.map"
   ];
 
-  var promises = patterns.map(function(pattern){      
+  var promises = patterns.map(function(pattern){
       return new Promise(function(resolve,reject){
         return glob(pattern, {}, function (er, files){
           if(er) {

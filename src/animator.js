@@ -26,9 +26,7 @@ export class VelocityAnimator {
    */
   leaveAnimation = {properties:"fadeOut",options:{duration:200}};
 
-  constructor(){
-    this.isAnimating = false;
-  }
+  isAnimating = false;
 
   //--------------------------------- Aurelia Animator interface
 
@@ -74,12 +72,6 @@ export class VelocityAnimator {
     return this._runElementAnimation(element,"leave");
   }
 
-  //these functions are not used with javascript animations
-  removeClass(element, className) { return Promise.resolve(false); }
-  addClass(element, className) { return Promise.resolve(false); }
-
-  //--------------------------------- Extra public interface
-
   /**
    * Register a new effect by name
    *
@@ -88,6 +80,10 @@ export class VelocityAnimator {
    */
   registerEffect(name,props){
     Velocity.registerEffect(name,props);
+  }
+
+  unregisterEffect(name){
+    Velocity.unregisterEffect(name);
   }
 
   /**

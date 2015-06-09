@@ -29,7 +29,6 @@
   "dependencies": {
   },
   "devDependencies": {
-    "bluebird": "^2.9.27",
     "gulp-gh-pages": "^0.5.2",
     "beautiful-docs": "^1.0.3",
     "child-process-promise": "^1.1.0",
@@ -51,7 +50,6 @@
     "ncp": "^2.0.0",
     "require-dir": "^0.3.0",
     "resolve-dep": "^0.5.3",
-    "rsvp": "^3.0.18",
     "bootstrap-less": "^3.3.8",
     "browser-sync": "^1.8.1",
     "compression": "^1.4.2",
