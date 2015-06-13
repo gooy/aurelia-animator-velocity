@@ -24,8 +24,12 @@ System.register(['velocity', 'jsol'], function (_export) {
           };
           this.enterAnimation = { properties: 'fadeIn', options: { duration: 200 } };
           this.leaveAnimation = { properties: 'fadeOut', options: { duration: 200 } };
-
           this.isAnimating = false;
+          this.easings = [];
+          this.effects = {};
+
+          this.easings = Animator.easings;
+          this.effects = Animator.Redirects;
         }
 
         _createClass(VelocityAnimator, [{
@@ -55,19 +59,14 @@ System.register(['velocity', 'jsol'], function (_export) {
             return this._runElementAnimation(element, 'leave');
           }
         }, {
-          key: 'removeClass',
-          value: function removeClass(element, className) {
-            return Promise.resolve(false);
-          }
-        }, {
-          key: 'addClass',
-          value: function addClass(element, className) {
-            return Promise.resolve(false);
-          }
-        }, {
           key: 'registerEffect',
           value: function registerEffect(name, props) {
             Velocity.registerEffect(name, props);
+          }
+        }, {
+          key: 'unregisterEffect',
+          value: function unregisterEffect(name) {
+            Velocity.unregisterEffect(name);
           }
         }, {
           key: 'runSequence',

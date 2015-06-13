@@ -24,18 +24,19 @@ gulp.task('demo-bundle', function (done) {
     'aurelia-router',
     'npm:core-js',
 
-    'github:aurelia/metadata@0.5.0',
-    'github:aurelia/task-queue@0.4.0',
-    'github:aurelia/event-aggregator@0.4.0',
-    'github:aurelia/templating@0.11.2',
-    'github:aurelia/history@0.4.0',
-    'github:aurelia/history-browser@0.4.0',
-    'github:aurelia/event-aggregator@0.4.0',
-    'github:aurelia/templating-router@0.12.0',
-    'github:aurelia/templating-resources@0.11.1',
-    'github:aurelia/templating-binding@0.11.0',
-    'github:aurelia/binding@0.6.1',
-    'github:aurelia/loader-default@0.7.0'
+    'github:aurelia/metadata@0.6.0',
+    'github:aurelia/task-queue@0.5.0',
+    'github:aurelia/event-aggregator@0.5.0',
+    'github:aurelia/templating@0.12.1',
+    'github:aurelia/history@0.5.0',
+    'github:aurelia/history-browser@0.5.0',
+    'github:aurelia/event-aggregator@0.5.0',
+    'github:aurelia/templating-router@0.13.0',
+    'github:aurelia/templating-resources@0.12.1',
+    'github:aurelia/templating-binding@0.12.0',
+    'github:aurelia/binding@0.7.3',
+    'github:aurelia/loader-default@0.8.0'
+
 
   ].join(' + ');
 
