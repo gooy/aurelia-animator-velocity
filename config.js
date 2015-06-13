@@ -414,7 +414,6 @@ System.config({
     },
     "github:gooy/aurelia-animator-velocity@0.0.2": {
       "aurelia-templating": "github:aurelia/templating@0.12.1",
-      "gooy/aurelia-markdown": "github:gooy/aurelia-markdown@0.0.2",
       "jsol": "github:daepark/JSOL@master",
       "velocity": "github:julianshapiro/velocity@1.2.2"
     },
