@@ -30,7 +30,7 @@ gulp.task('git-push-master', function(){
 });
 
 gulp.task('git-push-tags', function(){
-  git.push('origin', 'tags', function (err) {
+  git.push('origin', '',{args: '--tags'}, function (err) {
     if (err) throw err;
   });
 });
