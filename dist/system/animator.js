@@ -28,8 +28,8 @@ System.register(['velocity', 'jsol'], function (_export) {
           this.easings = [];
           this.effects = {};
 
-          this.easings = Animator.easings;
-          this.effects = Animator.Redirects;
+          this.easings = Velocity.Easings;
+          this.effects = Velocity.Redirects;
         }
 
         _createClass(VelocityAnimator, [{

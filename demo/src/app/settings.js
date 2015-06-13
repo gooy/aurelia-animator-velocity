@@ -30,18 +30,21 @@ export class SettingsPage{
     this.leaveDuration = (this.animator.leaveAnimation.options)? this.animator.leaveAnimation.options.duration : null;
 
     var key;
-    for(key in Animator.effects){
+    for(key in this.animator.effects){
+      if(!this.animator.effects.hasOwnProperty(key)) continue;
       if(key.lastIndexOf("In")===key.length-2) this.enterEffects.push(key);
       if(key.lastIndexOf("Down")===key.length-4) this.enterEffects.push(key);
       if(key.indexOf("callout")===0) this.enterEffects.push(key);
     }
-    for(key in Animator.effects){
+    for(key in this.animator.effects){
+      if(!this.animator.effects.hasOwnProperty(key)) continue;
       if(key.lastIndexOf("Out")===key.length-3) this.leaveEffects.push(key);
       if(key.lastIndexOf("Up")===key.length-2) this.leaveEffects.push(key);
       if(key.indexOf("callout")===0) this.leaveEffects.push(key);
     }
 
-    for(key in Animator.easings){
+    for(key in this.animator.easings){
+      if(!this.animator.easings.hasOwnProperty(key)) continue;
       this.easings.push(key);
     }
 

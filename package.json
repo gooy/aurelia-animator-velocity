@@ -94,8 +94,6 @@
     },
     "dependencies": {
       "aurelia-templating": "github:aurelia/templating@^0.12.1",
-      "gooy/aurelia-markdown": "github:gooy/aurelia-markdown@^0.0.2",
-      "gooy/aurelia-smooth-scroll": "github:gooy/aurelia-smooth-scroll@^0.0.2",
       "jsol": "github:daepark/JSOL@master",
       "velocity": "github:julianshapiro/velocity@1.2.2"
     },

@@ -32,8 +32,8 @@ export class VelocityAnimator {
   effects = {};
 
   constructor() {
-    this.easings = Animator.easings;
-    this.effects = Animator.Redirects;
+    this.easings = Velocity.Easings;
+    this.effects = Velocity.Redirects;
   }
 
   //--------------------------------- Aurelia Animator interface
