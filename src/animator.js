@@ -28,6 +28,14 @@ export class VelocityAnimator {
 
   isAnimating = false;
 
+  easings = [];
+  effects = {};
+
+  constructor() {
+    this.easings = Animator.easings;
+    this.effects = Animator.Redirects;
+  }
+
   //--------------------------------- Aurelia Animator interface
 
   /**
