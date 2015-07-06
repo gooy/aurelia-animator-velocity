@@ -133,7 +133,7 @@ gulp.task('demo-build', function(done) {
 gulp.task('demo-build-prod', function(done) {
   return runSequence(
     'demo-clean-dist',
-    ['demo-build-system','demo-build-html','demo-build-assets'],
+    ['demo-build-system','demo-build-html','demo-build-root','demo-build-assets'],
     ['demo-less-prod','demo-less_bootstrap-prod'],
     'demo-bundle',
     'demo-bundle-app',

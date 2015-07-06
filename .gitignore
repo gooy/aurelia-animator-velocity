@@ -10,7 +10,6 @@ dist/es6
 
 demo/dist
 .publish
-.bkp
 deploy
 docs
 
@@ -23,7 +22,7 @@ npm-debug.log
 # IDE generated files #
 #######################
 
-*.iml
+.idea
 .idea
 .netbeans
 nbproject
