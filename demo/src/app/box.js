@@ -35,7 +35,7 @@ export class Box{
     this.article.style.opacity = 0;
     this.actions.style.opacity = 0;
 
-    this.animator.runSequence(null);
+    this.animator.runSequence(this.enterSequence);
   }
 
   leave(){
