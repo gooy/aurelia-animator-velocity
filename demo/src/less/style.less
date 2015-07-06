@@ -1,97 +1,15 @@
-@color-primary: #aaa;
 
+@import "variables";
+@import "queries";
+
+@import "base";
+@import "animations";
+@import "box";
+@import "ace";
+
+@import "footer";
+@import "layout-sidemenu";
+@import "navbar";
+@import "nprogress";
 @import "splash";
 
-a{
-  cursor: pointer;
-}
-
-html{
-  height: 100%;
-}
-
-body{
-  height: 100%;
-  padding-top: 50px;
-}
-
-.page-host{
-  margin-bottom: 4em;
-
-}
-
-
-::-webkit-scrollbar {
-  -webkit-appearance: none;
-  width: 7px;
-}
-::-webkit-scrollbar-thumb {
-  background-color: darken(@color-primary,10);
-  -webkit-box-shadow: 0 0 1px rgba(255,255,255,.5);
-  &:hover{
-    background-color: darken(@color-primary,20);
-  }
-}
-
-.list-group{
-  .list-group-item{
-    padding: 0;
-    a{
-      padding: 5px 15px;
-      display: block;
-    }
-  }
-}
-
-.sidemenu-container{
-  margin-top: 1em;
-}
-
-section.page{
-  padding-top: 1px;
-}
-
-nav-bar{
-  display: block;
-  margin-bottom: 0;
-
-  > nav{
-    margin-bottom: 0;
-  }
-}
-
-.section-sidemenu{
-  > aside{
-    width: 200px;
-    position: fixed;
-    padding: 20px 0 0 10px;
-    .list-group-item{
-      cursor: pointer;
-      a{
-        text-decoration: none;
-        color: #333;
-      }
-      &:hover{
-        background: #eee;
-        a{
-          color: #000;
-        }
-      }
-    }
-  }
-  > article{
-    margin-left: 220px;
-    padding-top: 1px;
-  }
-}
-
-
-.btn.btn-default.active{
-  background-color: #96EDAB;
-}
-
-.list{
-  margin: 0;
-  padding: 0;
-  list-style-type: none;
-}

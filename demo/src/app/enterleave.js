@@ -1,7 +1,9 @@
 import {bindable,Animator} from 'aurelia-framework';
 import {config} from 'config';
+import {EventAggregator} from 'aurelia-event-aggregator';
 
-export class SettingsPage{
+
+export class EnterLeavePage{
 
   @bindable selectedEnterAnimation;
   @bindable selectedEnterEasing;
@@ -16,10 +18,11 @@ export class SettingsPage{
   leaveEffects = [];
   easings = [];
 
-  static inject = [Animator];
-  constructor(animator) {
+  static inject = [Animator,EventAggregator];
+  constructor(animator,ea) {
     this.animator = animator;
     this.config = config;
+    this.ea = ea;
 
     this.selectedEnterAnimation = this.animator.enterAnimation.properties;
     this.selectedEnterEasing = (this.animator.enterAnimation.options)? this.animator.enterAnimation.options.easing : null;
@@ -50,36 +53,29 @@ export class SettingsPage{
 
   }
 
+  attached(){
+    this.ea.publish("page:ready");
+    setTimeout(()=>{
+      this.ea.publish("page:ready");
+    })
+  }
+
+  enterAnim(){
+    this.animator.enter(this.testElement,this.enterConfig.getEffect(),{easing:this.enterConfig.easing,duration:parseInt(this.enterConfig.duration)});
+  }
+
+  leaveAnim(){
+    this.animator.leave(this.testElement,this.leaveConfig.getEffect(),{easing:this.leaveConfig.easing,duration:parseInt(this.leaveConfig.duration)});
+  }
+
   selectedEnterAnimationChanged(newValue,oldValue){
+    this.animator.effects[":enter"] = newValue;
     this.updateEnterAnimation();
-  }
-
-  selectedEnterEasingChanged(newValue,oldValue){
-    this.updateEnterAnimation();
-  }
-
-  enterDurationChanged(newValue,oldValue){
-    this.updateEnterAnimation();
-  }
-
-  updateEnterAnimation() {
-    this.animator.enterAnimation = {properties:this.selectedEnterAnimation,options:{easing:this.selectedEnterEasing,duration:this.enterDuration}};
   }
 
   selectedLeaveAnimationChanged(newValue,oldValue){
+    this.animator.effects[":leave"] = newValue;
     this.updateLeaveAnimation();
-  }
-
-  selectedLeaveEasingChanged(newValue,oldValue){
-    this.updateLeaveAnimation();
-  }
-
-  leaveDurationChanged(newValue,oldValue){
-    this.updateLeaveAnimation();
-  }
-
-  updateLeaveAnimation() {
-    this.animator.leaveAnimation = {properties:this.selectedLeaveAnimation,options:{easing:this.selectedLeaveEasing,duration:this.leaveDuration}};
   }
 
 }

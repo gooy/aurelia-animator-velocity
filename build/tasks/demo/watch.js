@@ -21,7 +21,7 @@ gulp.task('demo-watch', ['demo-serve'], function() {
   gulp.watch("config.js", ['demo-build-root',browserSync.reload]).on('change', reportChange);
 
   //images
-  //gulp.watch(dirs.lib+"/images/**/*", ['build-images', browserSync.reload]).on('change', reportChange);
+  gulp.watch(dirs.lib+"/images/**/*", ['build-images', browserSync.reload]).on('change', reportChange);
 
   //assets
   if(fs.existsSync(dirs.lib+"/locales")) gulp.watch(dirs.lib+"/locales/**/*", ['demo-build-assets', browserSync.reload]).on('change', reportChange);

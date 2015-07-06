@@ -1,112 +1,248 @@
-System.register(['velocity', 'jsol'], function (_export) {
+System.register(['velocity', 'velocity/velocity.ui', 'jsol', 'aurelia-templating'], function (_export) {
   'use strict';
 
-  var Velocity, JSOL, VelocityAnimator;
+  var Velocity, JSOL, animationEvent, VelocityAnimator;
 
   var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
   function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
+  function dispatch(element, name) {
+    var evt = new CustomEvent(animationEvent[name], { bubbles: true, cancelable: true, detail: element });
+    document.dispatchEvent(evt);
+  }
   return {
     setters: [function (_velocity) {
       Velocity = _velocity['default'];
-    }, function (_jsol) {
+    }, function (_velocityVelocityUi) {}, function (_jsol) {
       JSOL = _jsol['default'];
+    }, function (_aureliaTemplating) {
+      animationEvent = _aureliaTemplating.animationEvent;
     }],
     execute: function () {
       VelocityAnimator = (function () {
-        function VelocityAnimator() {
+        function VelocityAnimator(container) {
           _classCallCheck(this, VelocityAnimator);
 
           this.options = {
-            duration: 500,
+            duration: 400,
             easing: 'linear'
           };
-          this.enterAnimation = { properties: 'fadeIn', options: { duration: 200 } };
-          this.leaveAnimation = { properties: 'fadeOut', options: { duration: 200 } };
           this.isAnimating = false;
+          this.sequenceRunning = false;
+          this.enterAnimation = { properties: 'fadeIn', options: { easing: 'ease-in', duration: 200 } };
+          this.leaveAnimation = { properties: 'fadeOut', options: { easing: 'ease-in', duration: 200 } };
           this.easings = [];
-          this.effects = {};
+          this.effects = {
+            ':enter': 'fadeIn',
+            ':leave': 'fadeOut'
+          };
 
-          this.easings = Velocity.Easings;
-          this.effects = Velocity.Redirects;
+          this.container = container || window.document;
+          this.easings = Object.assign(Velocity.Easings, this.easings);
+          this.effects = Object.assign(Velocity.Redirects, this.effects);
         }
 
         _createClass(VelocityAnimator, [{
           key: 'animate',
-          value: function animate(element, props, options) {
-            var _this = this;
+          value: function animate(element, nameOrProps, options, silent) {
 
             this.isAnimating = true;
-            return new Promise(function (resolve) {
-              var defaults = {
-                complete: function complete(elements) {
-                  _this.isAnimating = false;
-                  resolve(true);
-                }
-              };
-              Velocity(element, props, Object.assign(_this.options, defaults, options));
+
+            var overrides = {
+              complete: function complete(el) {
+                this.isAnimating = false;
+                if (!silent) dispatch(el, 'animateDone');
+                if (options && options.complete) options.complete.apply(this, arguments);
+              }
+            };
+            if (!element) return Promise.reject(new Error('invalid first argument'));
+
+            if (typeof element === 'string') element = this.container.querySelectorAll(element);
+
+            if (!element || element.length === 0) return Promise.resolve(element);
+
+            if (!silent) dispatch(element, 'animateBegin');
+
+            if (typeof nameOrProps === 'string') {
+              nameOrProps = this.resolveEffectAlias(nameOrProps);
+            }
+
+            var opts = Object.assign({}, this.options, options, overrides);
+            var p = Velocity(element, nameOrProps, opts).then(function (elements) {
+              for (var i = 0, l = elements.length; i < l; i++) {
+                var el = elements[i];
+                var evt = new CustomEvent(animationEvent['animateDone'], { bubbles: true, cancelable: true, detail: null });
+                el.dispatchEvent(evt);
+              }
             });
+
+            if (!p) return Promise.reject(new Error('invalid element used for animator.animate'));
+            return p;
           }
         }, {
-          key: 'enter',
-          value: function enter(element) {
-            return this._runElementAnimation(element, 'enter');
+          key: 'stop',
+          value: function stop(element, clearQueue) {
+            Velocity(element, 'stop', clearQueue);
+            this.isAnimating = false;
+            return this;
           }
         }, {
-          key: 'leave',
-          value: function leave(element) {
-            return this._runElementAnimation(element, 'leave');
+          key: 'finish',
+          value: function finish(element, clearQueue) {
+            Velocity(element, 'finish', clearQueue);
+            this.isAnimating = false;
+            return this;
+          }
+        }, {
+          key: 'reverse',
+          value: function reverse(element) {
+            Velocity(element, 'reverse');
+            return this;
+          }
+        }, {
+          key: 'rewind',
+          value: function rewind(element) {
+            Velocity(name, 'rewind');
+            return this;
           }
         }, {
           key: 'registerEffect',
           value: function registerEffect(name, props) {
-            Velocity.registerEffect(name, props);
+            if (name[0] === ':') {
+              if (typeof props === 'string') {
+                this.effects[name] = props;
+              } else {
+                throw new Error('second parameter must be a string when registering aliases');
+              }
+            } else {
+              Velocity.RegisterEffect(name, props);
+            }
+            return this;
           }
         }, {
           key: 'unregisterEffect',
           value: function unregisterEffect(name) {
-            Velocity.unregisterEffect(name);
+            delete this.effects[name];
+            return this;
           }
         }, {
           key: 'runSequence',
           value: function runSequence(sequence) {
-            Velocity.runSequence(sequence);
+            var _this = this;
+
+            dispatch(window, 'sequenceBegin');
+            return new Promise(function (resolve, reject) {
+              _this.sequenceReject = resolve;
+              var last = sequence[sequence.length - 1];
+              last.options = last.options || last.o || {};
+              last.options.complete = function () {
+                if (!_this.sequenceReject) return;
+                _this.sequenceReject = undefined;
+                dispatch(window, 'sequenceDone');
+                resolve();
+              };
+              try {
+                Velocity.RunSequence(sequence);
+              } catch (e) {
+                _this.stopSequence(sequence);
+                _this.sequenceReject(e);
+              }
+            });
+          }
+        }, {
+          key: 'stopSequence',
+          value: function stopSequence(sequence) {
+            var _this2 = this;
+
+            sequence.map(function (item) {
+              var el = item.e || item.element || item.elements;
+              _this2.stop(el, true);
+            });
+            if (this.sequenceReject) {
+              this.sequenceReject();
+              this.sequenceReject = undefined;
+            }
+            dispatch(window, 'sequenceDone');
+            return this;
+          }
+        }, {
+          key: 'resolveEffectAlias',
+          value: function resolveEffectAlias(alias) {
+            if (typeof alias === 'string' && alias[0] === ':') {
+              return this.effects[alias];
+            }
+            return alias;
+          }
+        }, {
+          key: 'enter',
+          value: function enter(element, effectName, options) {
+
+            return this.stop(element, true)._runElementAnimation(element, effectName || ':enter', options, effectName || 'enter');
+          }
+        }, {
+          key: 'leave',
+          value: function leave(element, effectName, options) {
+            return this.stop(element, true)._runElementAnimation(element, effectName || ':leave', options, effectName || 'leave').then(function (elements) {});
+          }
+        }, {
+          key: '_runElements',
+          value: function _runElements(element, name) {
+            var options = arguments[2] === undefined ? {} : arguments[2];
+
+            if (!element) return Promise.reject(new Error('invalid first argument'));
+
+            if (typeof element === 'string') element = this.container.querySelectorAll(element);
+
+            if (!element || element.length === 0) return Promise.resolve(element);
+
+            for (var i = 0; i < element.length; i++) {
+              this._runElementAnimation(element[i], name, options);
+            }
           }
         }, {
           key: '_runElementAnimation',
           value: function _runElementAnimation(element, name) {
-            var _this2 = this;
+            var _this3 = this,
+                _arguments = arguments;
 
-            var properties;
-            var options = {};
+            var options = arguments[2] === undefined ? {} : arguments[2];
+            var eventName = arguments[3] === undefined ? undefined : arguments[3];
 
-            this._parseAnimations(element);
-            if (element.animations[name]) {
-              properties = element.animations[name].properties;
-              options = element.animations[name].options;
-            }
+            if (!element) return Promise.reject(new Error('invalid first argument'));
 
-            if (!properties) return Promise.resolve(false);
+            if (!element || element.length === 0) return Promise.resolve(element);
 
-            this.isAnimating = true;
-            return new Promise(function (resolve) {
-              var defaults = {
-                complete: function complete(elements) {
-                  _this2.isAnimating = false;
-                  resolve(true);
-                }
-              };
-              options = Object.assign({}, _this2.options, defaults, options);
-              Velocity(element, properties, options);
-            });
+            var properties = undefined;
+
+            this.parseAttributes(element);
+
+            if (eventName) dispatch(element, eventName + 'Begin');
+
+            var overrides = {
+              complete: function complete(elements) {
+                _this3.isAnimating = false;
+                if (eventName) dispatch(element, eventName + 'Done');
+                if (options && options.complete) options.complete.apply(_this3, _arguments);
+              }
+            };
+
+            var opts = Object.assign({}, this.options, options, overrides);
+            return this.animate(element, name, opts, true);
           }
         }, {
-          key: '_parseAnimations',
-          value: function _parseAnimations(element) {
-            element.animations = {};
-            element.animations.enter = this.parseAttributeValue(element.getAttribute('animation-enter')) || this.enterAnimation;
-            element.animations.leave = this.parseAttributeValue(element.getAttribute('animation-leave')) || this.leaveAnimation;
+          key: 'parseAttributes',
+          value: function parseAttributes(element) {
+            var el = undefined,
+                i = undefined,
+                l = undefined;
+            element = this.ensureList(element);
+            for (i = 0, l = element.length; i < l; i++) {
+              el = element[i];
+              el.animations = {};
+              el.animations.enter = this.parseAttributeValue(el.getAttribute('anim-enter')) || this.enterAnimation;
+              el.animations.leave = this.parseAttributeValue(el.getAttribute('anim-leave')) || this.leaveAnimation;
+            }
           }
         }, {
           key: 'parseAttributeValue',
@@ -122,6 +258,15 @@ System.register(['velocity', 'jsol'], function (_export) {
               options = JSOL.parse(options);
             }
             return { properties: properties, options: options };
+          }
+        }, {
+          key: 'resolveElement',
+          value: function resolveElement() {}
+        }, {
+          key: 'ensureList',
+          value: function ensureList(element) {
+            if (!Array.isArray(element) && !(element instanceof NodeList)) element = [element];
+            return element;
           }
         }]);
 

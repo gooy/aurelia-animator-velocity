@@ -1,0 +1,29 @@
+app-footer{
+  background: @bg-primary;
+  color: #fff;
+  padding: 20px 0 15px;
+  display: none;
+  z-index: 3;
+  position: absolute;
+  width: 100%;
+  text-align: center;
+  i{
+    vertical-align: middle;
+    margin: 0 5px;
+  }
+  a{
+    color: #fff;
+    &:focus, &:hover{
+      color: #fff;
+      font-weight: bold;
+    }
+  }
+}
+
+.affix-bottom{
+  position: fixed;
+  bottom: 0;
+  z-index: 1000;
+  left: 0;
+  width: 100%;
+}

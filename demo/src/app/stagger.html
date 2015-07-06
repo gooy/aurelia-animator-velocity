@@ -1,0 +1,91 @@
+<template>
+  <section class="page stagger au-animate container">
+    <article class="text-center">
+      <markdown>
+        
+        # Stagger
+        
+        An element staggers all its children when it has the `au-stagger` class.
+        
+      </markdown>
+        
+      <br/><br/>
+      
+      <div class="row">
+        
+        <div class="col-sm-6">
+          <h4>Enter animation</h4>
+          
+          <animation-config effect="transition.flipXIn" duration="500" easing="linear" animation-config.ref="animationConfig"></animation-config>
+          <br/>
+          <div class="form-inline">
+            <div class="form-group ">
+              <label for="stagger">stagger amount</label>
+              <input name="stagger" id="stagger" type="text" class="form-control" value.bind="staggerAmount" />
+            </div>
+          </div>
+          
+          <div class="form-inline">
+            <div class="form-group ">
+              <label for="drag">drag</label>
+              <input name="drag" id="drag" type="checkbox" class="form-control" checked.bind="drag" />
+            </div>
+          </div>
+          <div class="form-inline">
+            <div class="form-group ">
+              <label for="backwards">Backwards</label>
+              <input name="backwards" id="backwards" type="checkbox" class="form-control" checked.bind="backwards" />
+            </div>
+          </div>
+          
+        </div>
+        
+        <div class="col-sm-6">
+          <h4>Leave animation</h4>
+          <animation-config effect="transition.flipXOut" duration="250" easing="linear" animation-config.ref="leaveConfig"></animation-config>
+          <br/>
+          <div class="form-inline">
+            <div class="form-group ">
+              <label for="leave-stagger">stagger amount</label>
+              <input name="stagger" id="leave-stagger" type="text" class="form-control" value.bind="leaveStaggerAmount" />
+            </div>
+          </div>
+          
+          <div class="form-inline">
+            <div class="form-group ">
+              <label for="leave-drag">drag</label>
+              <input name="drag" id="leave-drag" type="checkbox" class="form-control" checked.bind="leaveDrag" />
+            </div>
+          </div>
+          <div class="form-inline">
+            <div class="form-group ">
+              <label for="leave-backwards">Backwards</label>
+              <input name="backwards" id="leave-backwards" type="checkbox" class="form-control" checked.bind="leaveBackwards" />
+            </div>
+          </div>
+          
+          
+          
+        </div>
+        
+      </div>
+      
+      
+      <div class="stage">
+        <div class="actions">
+          <a class="btn btn-primary" click.delegate="stagger()">ENTER</a>
+          <a class="btn btn-primary" click.delegate="staggerLeave()">LEAVE</a>
+        </div>
+        <label for="count">elements</label> <input name="count" id="count" type="text" class="form-control input-xs" value.bind="count" />
+        
+        <br/><br/>
+        
+        <ul ref="testElement">
+          <!--<li class="staggerBox center-cell" repeat.for="i of count"><div>${i}</div></li>-->
+        </ul>
+        
+      </div>
+    
+    </article>
+  </section>
+</template>

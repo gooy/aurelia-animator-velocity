@@ -1,0 +1,15 @@
+.mq(@mq,@rules){
+  & when (@mediaqueries = 1) {
+    @media @mq{
+      @rules();
+    }
+  }
+}
+
+.eq(@mq,@rules){
+  & when (@elementqueries = 1) {
+    @{mq}{
+      @rules();
+    }
+  }
+}

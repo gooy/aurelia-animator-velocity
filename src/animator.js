@@ -1,5 +1,10 @@
 import Velocity from 'velocity';
+import 'velocity/velocity.ui';
+
 import JSOL from 'jsol';
+import {animationEvent} from 'aurelia-templating';
+
+//import 'core-js';
 
 /**
  * Aurelia animator implementation using Velocity
@@ -11,29 +16,37 @@ export class VelocityAnimator {
    * @type {Object}
    */
   options = {
-    duration: 500,
-    easing:"linear"
+    duration: 400,
+    easing:'linear'
   };
 
-  /**
-   * Default enter animation
-   * @type {Object}
-   */
-  enterAnimation = {properties:"fadeIn",options:{duration:200}};
-  /**
-   * Default leave animation
-   * @type {Object}
-   */
-  leaveAnimation = {properties:"fadeOut",options:{duration:200}};
-
   isAnimating = false;
+  sequenceRunning = false;
 
+  enterAnimation = {properties:"fadeIn",options:{easing:"ease-in",duration:200}};
+  leaveAnimation = {properties:"fadeOut",options:{easing:"ease-in",duration:200}};
+
+  /**
+   * Array of easing names that can be used with this animator
+   *
+   * @type {Array}
+   */
   easings = [];
-  effects = {};
 
-  constructor() {
-    this.easings = Velocity.Easings;
-    this.effects = Velocity.Redirects;
+  /**
+   * Effects mapped by name
+   *
+   * @type {Object}
+   */
+  effects = {
+    ":enter": "fadeIn",
+    ":leave": "fadeOut"
+  };
+
+  constructor(container) {
+    this.container = container||window.document;
+    this.easings = Object.assign(Velocity.Easings,this.easings);
+    this.effects = Object.assign(Velocity.Redirects,this.effects);
   }
 
   //--------------------------------- Aurelia Animator interface
@@ -41,57 +54,147 @@ export class VelocityAnimator {
   /**
    * Run a animation by name or by manually specifying properties and options for it
    *
-   * @param element {HTMLElement}   Element to animate
-   * @param props {Object}          element properties to animate
-   * @param options {Object}        animation options
+   * @param element {HTMLElement|Array<HTMLElement>}    Element or array of elements to animate
+   * @param nameOrProps {String|Object}                       Element properties to animate
+   * @param options {Object}                            Animation options
    *
    * @returns {Promise} resolved when animation is complete
    */
-  animate(element,props,options) {
+  animate(element,nameOrProps,options,silent) {
+
     this.isAnimating = true;
-    return new Promise(resolve=>{
-      var defaults = {
-        complete:elements=>{
-          this.isAnimating = false;
-          resolve(true);
-        }
-      };
-      Velocity(element, props, Object.assign(this.options,defaults,options));
+
+    let overrides = {
+      complete:function(el){
+        this.isAnimating = false;
+        if(!silent) dispatch(el,"animateDone");
+        if(options && options.complete) options.complete.apply(this,arguments);
+      }
+    };
+    if(!element) return Promise.reject(new Error("invalid first argument"));
+
+    //resolve selectors
+    if(typeof element === "string") element = this.container.querySelectorAll(element);
+
+    //if nothing was found or no element was passed resolve the promise immediatly
+    if(!element || element.length === 0) return Promise.resolve(element);
+
+    if(!silent) dispatch(element,"animateBegin");
+
+    /*if(element.animations[name]) {
+     properties = element.animations[name].properties;
+     options = element.animations[name].options;
+     }*/
+
+    if(typeof nameOrProps === "string"){
+      nameOrProps =  this.resolveEffectAlias(nameOrProps);
+      //if(!nameOrProps) Promise.reject(new Error(`effect alias ${nameOrProps} not found`));
+    }
+
+    //try to run the animation
+    var opts =Object.assign({},this.options,options,overrides);
+    var p = Velocity(element, nameOrProps, opts).then(elements=>{
+      for(var i = 0, l = elements.length; i < l; i++){
+        var el = elements[i];
+        var evt = new CustomEvent(animationEvent["animateDone"], { bubbles: true, cancelable: true, detail: null });
+        el.dispatchEvent(evt);
+      }
     });
+
+    //reject the promise if Velocity didn't return a Promise due to invalid arguments
+    if(!p) return Promise.reject(new Error("invalid element used for animator.animate"));
+    return p;
   }
 
+
+
   /**
-   * Run the enter animation on an element
+   * Stop an animation
    *
    * @param element {HTMLElement}   Element to animate
-   * @returns {Promise} resolved when animation is complete
+   * @param clearQueue {boolean}    clear the animation queue
+   *
+   * @returns {Animator} return this instance for chaining
    */
-  enter(element) {
-    return this._runElementAnimation(element,"enter");
+  stop(element, clearQueue){
+    Velocity(element,'stop',clearQueue);
+    this.isAnimating = false;
+    return this;
   }
 
   /**
-   * Run the leave animation on an element
+   * Move to end of animation and stop
    *
    * @param element {HTMLElement}   Element to animate
-   * @returns {Promise} resolved when animation is complete
+   *
+   * @returns {Animator} return this instance for chaining
    */
-  leave(element) {
-    return this._runElementAnimation(element,"leave");
+  finish(element,clearQueue){
+    Velocity(element, 'finish', clearQueue)
+    this.isAnimating = false;
+    return this;
+    /*return new Promise((resolve, reject) => {
+      let result;
+      try{ result = ; }catch(e){reject(e)}
+
+      //to finish an animation, velocity changes its duration to 1ms , so we need to wait 2 ms to get the result
+      //note waiting 2 ms doesnt seem to work most of the time , needs to be longer
+      setTimeout(()=>{
+        resolve();
+      },10);
+    });*/
   }
 
   /**
-   * Register a new effect by name
+   * Stop an animation
+   *
+   * @param element {HTMLElement}   Element to animate
+   *
+   * @returns {Animator} return this instance for chaining
+   */
+  reverse(element){
+    Velocity(element,'reverse');
+    return this;
+  }
+
+  /**
+   * Bring animation back to the start state (this does not stop an animation)
+   *
+   */
+  rewind(element){
+    Velocity(name,'rewind');
+    return this;
+  }
+
+  /**
+   * Register a new effect by name.
+   *
+   * if second parameter is a string the effect will registered as an alias
    *
    * @param name {String}   name for the effect
    * @param props {Object}  properties for the effect
    */
   registerEffect(name,props){
-    Velocity.registerEffect(name,props);
+    if(name[0] === ":") {
+      if(typeof props === "string"){
+        this.effects[name] = props;
+      }else{
+        throw new Error("second parameter must be a string when registering aliases");
+      }
+    }else{
+      Velocity.RegisterEffect(name,props);
+    }
+    return this;
   }
 
+  /**
+   * Unregister an effect by name
+   *
+   * @param name {String}   name of the effect
+   */
   unregisterEffect(name){
-    Velocity.unregisterEffect(name);
+    delete this.effects[name];
+    return this;
   }
 
   /**
@@ -100,56 +203,166 @@ export class VelocityAnimator {
    * @param sequence {Array}  array of animations
    */
   runSequence(sequence){
-    Velocity.runSequence(sequence);
+    dispatch(window,"sequenceBegin");
+    return new Promise((resolve, reject) => {
+      this.sequenceReject = resolve;
+      var last = sequence[sequence.length-1];
+      last.options = last.options||last.o||{};
+      last.options.complete = ()=>{
+        if(!this.sequenceReject) return;
+        this.sequenceReject = undefined;
+        dispatch(window,"sequenceDone");
+        resolve();
+      };
+      try{
+        Velocity.RunSequence(sequence);
+      }catch(e){
+        this.stopSequence(sequence);
+        this.sequenceReject(e);
+      }
+    });
+  }
+
+  /**
+   * runs stop on all elements in a sequence
+   *
+   * @param sequence {Array}  array of animations
+   */
+  stopSequence(sequence){
+    sequence.map(item=>{
+      var el = item.e||item.element||item.elements;
+      this.stop(el,true);
+    });
+    if(this.sequenceReject) {
+      this.sequenceReject();
+      this.sequenceReject = undefined;
+    }
+    dispatch(window,"sequenceDone");
+    return this;
+  }
+
+  /**
+   * Resolve the real effect name from an effect alias
+   */
+  resolveEffectAlias(alias){
+    //resolve alias if string start with a colon
+    if(typeof alias === "string" && alias[0]===":"){
+      return this.effects[alias];
+    }
+    return alias;
+  }
+
+  //--------- The enter and leave animations are called for each page transition made by the router
+
+  /**
+   * Run the enter animation on an element
+   *
+   * @param element {HTMLElement}   Element to animate
+   * @returns {Promise} resolved when animation is complete
+   */
+  enter(element,effectName,options) {
+
+    return this.stop(element,true)._runElementAnimation(element,effectName||':enter',options,effectName||'enter');
+  }
+
+  /**
+   * Run the leave animation on an element
+   *
+   * @param element {HTMLElement}   Element to animate
+   *
+   * @returns {Promise} resolved when animation is complete
+   */
+  leave(element,effectName,options) {
+    return this.stop(element,true)._runElementAnimation(element,effectName||':leave',options,effectName||'leave').then(elements=>{
+      /*for(var i = 0, l = elements.length; i < l; i++){
+        var el = elements[i];
+        //el.style.transform = "none";
+        el.removeAttribute("style");
+      }*/
+    });
+  }
+
+  _runElements(element,name,options={}){
+
+    //if nothing was found or no element was passed resolve the promise immediatly
+    if(!element) return Promise.reject(new Error("invalid first argument"));
+
+    //resolve selectors
+    if(typeof element === "string") element = this.container.querySelectorAll(element);
+
+    //if nothing was found or no element was passed resolve the promise immediatly
+    if(!element || element.length === 0) return Promise.resolve(element);
+
+
+    for (var i = 0; i < element.length; i++) {
+      this._runElementAnimation(element[i],name,options);
+    }
   }
 
   //--------------------------------- Private methods
 
   /**
-   * Run animation by type name
+   * execute an animation that is coupled to an HTMLElement
+   *
+   * The html element can optionally override the animation options through it's attributes
    *
    * @param element {HTMLElement}   Element to animate
-   * @param name {String}           Name of the animation to run
+   * @param name {String}           Name of the effect to execute
+   * @param options                 animation options
    *
    * @returns {Promise} resolved when animation is complete
+   *
    */
-  _runElementAnimation(element,name){
-    var properties;
-    var options = {};
+  _runElementAnimation(element,name,options={},eventName=undefined){
 
+    //if nothing was found or no element was passed resolve the promise immediatly
+    if(!element) return Promise.reject(new Error("invalid first argument"));
+
+    //resolve selectors
+    //if(typeof element === "string") element = this.container.querySelectorAll(element);
+
+    //if nothing was found or no element was passed resolve the promise immediatly
+    if(!element || element.length === 0) return Promise.resolve(element);
+
+    let properties;
     //parse animation properties for this element if none were found
     //if(!element.animations)
-      this._parseAnimations(element);
-    if(element.animations[name]) {
-      properties = element.animations[name].properties;
-      options = element.animations[name].options;
-    }
+    this.parseAttributes(element);
+
+    //get nameOrProps and options from the element's attributes if specified
+
+    if(eventName) dispatch(element,eventName+"Begin");
 
     //skip if no enter animation was specified
-    if(!properties) return Promise.resolve(false);
+    //if(!properties) return Promise.resolve(false);
 
-    this.isAnimating = true;
-    return new Promise(resolve=>{
-      var defaults = {
-        complete:elements=>{
-          this.isAnimating = false;
-          resolve(true);
-        }
-      };
-      options = Object.assign({},this.options,defaults,options);
-      Velocity(element, properties, options);
-    });
+    let overrides = {
+      complete:elements=>{
+        this.isAnimating = false;
+        if(eventName) dispatch(element,eventName+"Done");
+        if(options && options.complete) options.complete.apply(this,arguments);
+      }
+    };
+
+    var opts = Object.assign({},this.options,options,overrides);
+    return this.animate(element, name, opts, true);
   }
 
   /**
-   * Parse animations specified in the elements attributes
+   * Parse animations specified in the elements attributes.
+   * The parsed attributes will be stored in the animations property for the element.
    *
-   * @param element {HTMLElement}   Element to parse animations from
+   * @param element {HTMLElement|Array<HTMLElement>}   Element(s) to parse
    */
-  _parseAnimations(element){
-    element.animations = {};
-    element.animations.enter = this.parseAttributeValue(element.getAttribute("animation-enter"))||this.enterAnimation;
-    element.animations.leave = this.parseAttributeValue(element.getAttribute("animation-leave"))||this.leaveAnimation;
+  parseAttributes(element){
+    let el,i,l;
+    element = this.ensureList(element);
+    for (i = 0,l=element.length; i < l; i++) {
+      el = element[i];
+      el.animations = {};
+      el.animations.enter = this.parseAttributeValue(el.getAttribute('anim-enter'))||this.enterAnimation;
+      el.animations.leave = this.parseAttributeValue(el.getAttribute('anim-leave'))||this.leaveAnimation;
+    }
   }
 
   /**
@@ -163,10 +376,10 @@ export class VelocityAnimator {
    */
   parseAttributeValue(value){
     if(!value) return value;
-    var p = value.split(";");
-    var properties = p[0];
-    var options = {};
-    if(properties[0]=="{" && properties[properties.length-1] == "}") properties = JSOL.parse(properties);
+    let p = value.split(';');
+    let properties = p[0];
+    let options = {};
+    if(properties[0]=='{' && properties[properties.length-1] == '}') properties = JSOL.parse(properties);
 
     if(p.length>1) {
       options = p[1];
@@ -175,4 +388,18 @@ export class VelocityAnimator {
     return {properties,options};
   }
 
+  resolveElement(){
+
+  }
+
+  ensureList(element){
+    if(!Array.isArray(element) && !(element instanceof NodeList)) element = [element];
+    return element
+  }
+
+}
+
+function dispatch(element,name){
+  var evt = new CustomEvent(animationEvent[name], { bubbles: true, cancelable: true, detail: element });
+  document.dispatchEvent(evt);
 }

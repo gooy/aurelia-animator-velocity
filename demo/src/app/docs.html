@@ -1,59 +1,69 @@
 <template>
-  <section class="page au-animate section-sidemenu container">
+  <section class="au-animate page section-sidemenu">
     
-    <aside>
+    <aside class="au-animate" anim-enter="transition.slideLeftIn" anim-leave="transition.slideLeftOut" ref="aside">
+      
+      <header>
+        <a href="#/docs" smooth-scroll>Docs</a>
+      </header>
 
       <nav class="sidemenu">
         <ul class="list-group">
-          <li class="list-group-item"> <a href="#/home/install" smooth-scroll>Install</a></li>
-          <li class="list-group-item"> <a href="#/home/view-enter-leave" smooth-scroll>View enter/leave</a></li>
-          <li class="list-group-item"> <a href="#/home/element-animations" smooth-scroll>Element animations</a></li>
-          <li class="list-group-item"> <a href="#/home/effects" smooth-scroll>Effects</a></li>
-          <li class="list-group-item"> <a href="#/home/custom-effects" smooth-scroll>Custom Effects</a></li>
-          <li class="list-group-item"> <a href="#/home/sequences" smooth-scroll>Sequences</a></li>
+          <li class="list-group-item"> <a href="#/docs/install" smooth-scroll>Install</a></li>
+          <li class="list-group-item"> <a href="#/docs/view-enter-leave" smooth-scroll>View enter/leave</a></li>
+          <li class="list-group-item"> <a href="#/docs/element-animations" smooth-scroll>Element animations</a></li>
+          <li class="list-group-item"> <a href="#/docs/effects" smooth-scroll>Effects</a></li>
+          <li class="list-group-item"> <a href="#/docs/custom-effects" smooth-scroll>Custom Effects</a></li>
+          <li class="list-group-item"> <a href="#/docs/sequences" smooth-scroll>Sequences</a></li>
         </ul>
       </nav>
 
     </aside>
-    <article>
+    <article  class="au-animate" anim-enter="transition.slideLeftIn" anim-leave="transition.slideLeftOut" ref="article">
 
 <markdown>
 
-<h1 id="/home/install">Velocity Animator</h1>
+<h1 id="/docs">Velocity Animator</h1>
 
-This plugin integrates the aurelia animator with [velocity](http://velocityjs.org).
-
-Install it into your project.
+<p class="lead text-center"> 
+  An implementation of the Aurelia base animator using <a href="http://velocityjs.org">Velocity</a>.
+</p>
+  
+  <br/>
+  
+<h2 id="/docs/install">Installation</h2>
+  
+Install the package into your project using JSPM.
 
 ```javascript
 jspm install gooy/aurelia-animator-velocity
 ```
 
-Register it as a plugin with aurelia.
-
+Register it as a plugin with aurelia inside your `main.js`.
+  
 ```javascript
 aurelia.use.plugin('gooy/aurelia-animator-velocity')
 ```
 
 Options can be specified while registering the plugin.  
-Have a look at the [velocity options](http://julian.com/research/velocity/#duration) for a complete list.
+Have a look at the [velocity options](http://julian.com/research/velocity/#duration) for a complete list of options.
 
-The options specified here are the defaults that will be used for animations that do not specifically specify these options.
+The options used in the example below are the defaults.
 
 ```javascript
 aurelia.use.plugin('gooy/aurelia-animator-velocity',instance=>{
-  instance.options.duration = 500;
-  instance.options.easing = "ease-in";
+  instance.options.duration = 400;
+  instance.options.easing = "linear";
 
-  instance.enterAnimation = "fadeIn";
-  instance.leaveAnimation = "fadeOut";
+  instance.enterAnimation = {properties:"fadeIn",options:{easing:"easeIn",duration:200}};
+  instance.leaveAnimation = {properties:"fadeOut",options:{easing:"easeIn",duration:200}};
 })
 ```
 
-
-<h2 id="/home/view-enter-leave">View enter/leave animations</h2>
+<h2 id="/docs/view-enter-leave">Use with markup</h2>
 
 If the firstChild of a ViewSlot has the `au-animate` class Aurelia will automatically execute the `enter` and `leave` animations on that element.
+
 for example:
 
 ```markup
@@ -68,26 +78,25 @@ By default the enter animation will use the `fadeIn` effect and the leave animat
 The defaults can be changed during plugin registration.
 
 Elements can specify an effect an extra options on a use-by-use basis by specifying
-the `animation-enter` and/or `animation-leave` attributes.
+the `anim-enter` and/or `anim-leave` attributes.
 
 ```markup
-<section class="au-animate" animation-enter="fadeIn" animation-leave="fadeOut"></section>
+<section anim-enter="fadeIn" anim-leave="fadeOut"></section>
 ```
 
 Options can also be specified using a json object after the effectName.
 
 ```markup
-<section class="au-animate" animation-enter="fadeIn;{duration:1000,easing:ease-out}" ></section>
+<section anim-enter="fadeIn;{duration:1000,easing:ease-out}" ></section>
 ```
 
 Instead of using an effectName, it is also possible to specify properties that should be animated as a json object.
 
 ```markup
-<section class="au-animate" animation-enter="{opacity:0};{duration:1000,easing:ease-out}" ></section>
+<section anim-enter="{opacity:0};{duration:1000,easing:ease-out}" ></section>
 ```
 
-
-<h2 id="/home/element-animations">Element animations</h2>
+<h2 id="/docs/element-animations">Use with JavaScript</h2>
 
 To use enter/leave animations on any element the animator has to be invoked manually.  
 To do this inject it into your VM an call the enter/leave methods.
@@ -120,7 +129,7 @@ export class MyCustomElement{
 The sidemenu on this page has links that enable smooth scrolling.
 The [aurelia-smooth-scroll](https://github.com/gooy/) plugin makes use of this animator to scroll the body smoothly to the target location.
 
-<h2 id="/home/effects">Effects</h2>
+<h2 id="/docs/effects">Effects</h2>
   
 ### Default effects
   
@@ -213,7 +222,7 @@ import "velocity/velocity.ui";
 - transition.perspectiveRightOut
 
 
-<h2 id="/home/custom-effects">Registering custom effects</h2>
+<h2 id="/docs/custom-effects">Registering custom effects</h2>
 
 Custom effects can be registered by using the `registerEffect` method.
 
@@ -232,7 +241,7 @@ animator.registerEffect("my_cool_effect",{
 
 Check the [velocity documentation](http://julian.com/research/velocity/#uiPack) for more details.
 
-<h2 id="/home/sequences">Running sequences</h2>
+<h2 id="/docs/sequences">Running sequences</h2>
 
 ```javascript
 animator.runSequence([
@@ -245,6 +254,21 @@ animator.runSequence([
 Check the [velocity documentation](http://julian.com/research/velocity/#uiPack) for more details.
 
 </markdown>
+
+    </article>
+  </section>
+</template>
+
+
+
+<template>
+  <section class="page section-sidemenu">
+    
+    <aside class="au-animate" anim-enter="transition.slideLeftIn" anim-leave="transition.slideLeftOut" ref="aside">
+      
+ 
+    </aside>
+    <article  class="au-animate" anim-enter="transition.slideLeftIn" anim-leave="transition.slideLeftOut" ref="article">
 
     </article>
   </section>

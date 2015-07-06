@@ -52,7 +52,7 @@ function compileFile(input, output, options){
       }, options)))
 
     .pipe(autoprefixer({browsers: ['last 3 versions']}))
-    .pipe(minify({restructuring: false, keepBreaks: !options.compress}))
+    .pipe(minify({restructuring: true, keepBreaks: !options.compress}))
     //.pipe(sourcemaps.write())
     .pipe(gulp.dest(output))
     ;

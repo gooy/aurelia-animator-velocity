@@ -1,0 +1,179 @@
+
+html{
+  height: 100%;
+}
+
+body{
+  height: 100%;
+  padding-top: 60px;
+  font-family: 'Roboto', sans-serif;
+  font-size: 16px;
+  line-height: 1.4em;
+}
+
+a{
+  cursor: pointer;
+  color: @color-primary;
+  &:hover{
+    color: @color-primary-hover;
+  }
+}
+
+.page-host{
+  //margin-bottom: 2em;
+}
+
+::scrollbar {
+  appearance: none;
+  width: 7px;
+}
+::scrollbar-thumb {
+  background-color: @color-primary,10;
+  box-shadow: 0 0 1px rgba(255,255,255,.5);
+  &:hover{
+    background-color: darken(@color-primary,10);
+  }
+}
+
+
+.list-group{
+  .list-group-item{
+    padding: 0;
+    a{
+      padding: 5px 15px;
+      display: block;
+    }
+  }
+}
+
+.sidemenu-container{
+  margin-top: 1em;
+}
+
+section.page{
+  padding: 1px 0px 40px 0px;
+  > article{
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+}
+
+nav-bar{
+  display: block;
+  margin-bottom: 0;
+
+  > nav{
+    margin-bottom: 0;
+  }
+}
+
+article{
+
+  h1,h2,h3,h4,h5,h6{
+    text-transform: uppercase;
+    font-weight: lighter;
+    color: #666;
+  }
+  h1{
+    font-size: 3em;
+    text-align: center;
+    padding-top: 1em;
+    margin-bottom: .6em;
+    margin-top: 0;
+  }
+}
+
+.btn.btn-default.active{
+  background-color: #96EDAB;
+}
+
+.list{
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+}
+
+.stage{
+  text-align: center;
+}
+
+
+.animTest{
+
+  margin: 0 auto;
+  opacity: 0;
+}
+
+.staggerBox{
+
+  width: 50px;
+  height: 50px;
+  background: @color-primary;
+  text-align: center;
+  vertical-align: middle;
+  color: #fff;
+  font-weight: bold;
+  font-size: 16px;
+  margin: 0 0 5px 5px;
+
+}
+
+.center-cell{
+  display: inline-table;
+  > * {
+    display: table-cell;
+    text-align: center;
+    vertical-align: middle;
+  }
+}
+
+
+body.ready{
+  app-footer{
+    display: block;
+  }
+}
+
+
+.page.runsequence {
+  min-height: 750px;
+  box{
+    margin: 0 auto;
+  }
+}
+
+.page.enterleave{
+  text-align: center;
+}
+
+.page.animate{
+  text-align: center;
+  .settings{
+    width: 500px;
+    margin: 0 auto;
+  }
+}
+
+.page.stagger{
+  .actions{
+    margin-bottom: 10px;
+  }
+}
+
+ace.ace_editor{
+  text-align: left;
+  display: block;
+  min-height: 150px;
+  font-size: 16px;
+}
+
+
+animation-config{
+  display: block;
+  //min-height: 240px;
+}
+
+.form-control.input-xs{
+  width: 50px;
+  display: inline;
+}

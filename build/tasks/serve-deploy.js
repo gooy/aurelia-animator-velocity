@@ -1,9 +1,10 @@
 var gulp = require('gulp');
-var server = require('gulp-express');
+var gls = require('gulp-live-server');
 
 /**
  * Serve the deploy directory for deploy testing
  */
 gulp.task('serve-deploy', function() {
-  server.run(['server-deploy.js']);
+  var server = gls.new(["server-deploy.js"]);
+  server.start();
 });

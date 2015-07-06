@@ -1,7 +1,18 @@
 import 'gooy/aurelia-animator-velocity';
 import 'gooy/aurelia-markdown';
+import 'gooy/aurelia-ace';
+import 'nprogress';
 
-import 'velocity/velocity.ui';
+import 'bootstrap-less/js/collapse';
+import 'bootstrap-less/js/transition';
+
+import 'ace';
+import 'ace/theme-monokai';
+import 'ace/mode-javascript';
+import 'gooy/aurelia-ace';
+import 'js-beautify';
+
+
 import {SmoothScroll} from 'gooy/aurelia-smooth-scroll';
 
 //Fix Prism to allow dot character in html attribute names
@@ -14,18 +25,17 @@ export function configure(aurelia) {
   };
 
   aurelia.use
-  .standardConfiguration()
-  .developmentLogging()
-  .plugin('gooy/aurelia-animator-velocity',instance=>{
-    instance.options.duration = 400;
-    instance.options.easing = "ease-in";
+    .standardConfiguration()
+    //.developmentLogging()
 
-    instance.enterAnimation = {properties:"fadeIn",options:{easing:"ease-in",duration:200}};
-    instance.leaveAnimation = {properties:"fadeOut",options:{easing:"ease-in",duration:200}};
-  })
-  .plugin('gooy/aurelia-markdown')
-  .plugin('gooy/aurelia-smooth-scroll')
+    .plugin('gooy/aurelia-animator-velocity')
+    .plugin('gooy/aurelia-markdown')
+    .plugin('gooy/aurelia-smooth-scroll')
+    .plugin('gooy/aurelia-ace')
   ;
+
+  aurelia.globalizeResources("loading-indicator");
+  aurelia.globalizeResources("animation-config");
 
   aurelia.start().then(a => a.setRoot());
 }

@@ -67,9 +67,7 @@ gulp.task('demo-build-jspm-packages', function (done) {
     "jspm_packages/github/aurelia/html-template-element@*.js",
     "jspm_packages/github/aurelia/html-template-element@*/HTMLTemplateElement.js",
     "jspm_packages/github/aurelia/html-template-element@*/HTMLTemplateElement.min.js",
-    "jspm_packages/github/gooy/aurelia-dialog@*/*.html",
-    "jspm_packages/npm/font-awesome@*/css/**/*",
-    "jspm_packages/npm/font-awesome@*/fonts/**/*",
+    "jspm_packages/github/ajaxorg/ace-builds@*/**/*",
     "jspm_packages/*.js",
     "jspm_packages/*.map"
   ];
@@ -96,6 +94,17 @@ gulp.task('demo-build-jspm-packages', function (done) {
 
 });
 
+gulp.task('demo-dist-filter', function(done) {
+  var patterns = [
+    dirs.build+"/app/**/*.js",
+    dirs.build+"/app/**/*.map"
+  ];
+  removeAll(patterns,{
+    ignore:[dirs.build+"/app/aurelia.js",dirs.build+"/app/app-bundle.js"]
+  },done);
+});
+
+
 /**
  * Clean the dist direcotry
  */
@@ -110,7 +119,8 @@ gulp.task('demo-clean-dist', function() {
 gulp.task('demo-build', function(done) {
   return runSequence(
     'demo-clean-dist',
-    'demo-unbundle',
+    'demo-build-images',
+    'demo-iconfont',
     ['demo-build-system','demo-build-html','demo-build-root','demo-build-assets'],
     ['demo-less','demo-less_bootstrap'],
     done
@@ -127,10 +137,37 @@ gulp.task('demo-build-prod', function(done) {
     ['demo-less-prod','demo-less_bootstrap-prod'],
     'demo-bundle',
     'demo-bundle-app',
+    'demo-dist-filter',
     'demo-uglify-dist',
     'demo-build-root',
+    'demo-build-images',
     'jspm-link',
     'demo-build-jspm-packages',
+    'demo-unbundle',
     done
   );
 });
+
+function removeAll(patterns,options,done){
+  var promises = patterns.map(function(pattern){
+    return new Promise(function(resolve,reject){
+      return glob(pattern, options, function (er, files){
+        if(er) {
+          console.error(er);
+          reject(er)
+        }
+        for(var i2 = 0, l2 = files.length; i2 < l2; i2++){
+          var file = files[i2];
+          if(fs.existsSync(file)) {
+            fs.unlinkSync(file);
+          }
+        }
+        resolve();
+      });
+    })
+  });
+
+  Promise.all(promises).then(function(){
+    done();
+  });
+}

@@ -1,6 +1,6 @@
 # aurelia-animator-velocity
 
-An implementation of the abstract Animator interface from templating which enables animations using [velocity](http://velocityjs.org).
+A collection of some common decorators for javascriptations using [velocity](http://velocityjs.org).
 
 ## Installation
 

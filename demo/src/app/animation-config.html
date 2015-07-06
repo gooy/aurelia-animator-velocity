@@ -1,0 +1,30 @@
+<template>
+  <div>
+    
+    <small>
+      Select an effect from the dropdown or write a custom effect.
+    </small>
+    <select class="form-control" value.bind="effect">
+      <option value="">--- CUSTOM EFFECT ---</option>
+      <option value.bind="item" repeat.for="item of effects">${item}</option>
+    </select>
+    
+    <ace id="ace" ace.ref="aceEditor" value.bind="customEffect" show.bind="effect == ''"></ace>  
+    
+    <br/>
+    <div class="form-inline">
+      <div class="form-group ">
+        <label for="duration">duration</label>
+        <input name="duration" id="duration" type="text" class="form-control" value.bind="duration" />
+      </div>
+      &nbsp;&nbsp;
+      <div class="form-group">
+        <label>easing</label>
+        <select class="form-control" value.bind="easing">
+          <option value.bind="item" repeat.for="item of easings">${item}</option>
+        </select>
+      </div>
+    </div>
+    
+  </div>
+</template>
