@@ -5,7 +5,7 @@ node_modules
 # generated files #
 #######################
 dist/amd
-dist/commonjs
+dist/system
 dist/es6
 
 demo/dist
