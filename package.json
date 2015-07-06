@@ -97,7 +97,6 @@
       "lib": "dist/commonjs"
     },
     "dependencies": {
-      "bootstrap-less": "github:distros/bootstrap-less@^3.3.8",
       "jsol": "github:daepark/JSOL@master",
       "velocity": "github:julianshapiro/velocity@^1.2.2"
     },
@@ -108,6 +107,7 @@
       "aurelia-http-client": "github:aurelia/http-client@^0.10.0",
       "aurelia-router": "github:aurelia/router@^0.10.0",
       "aurelia-templating": "github:aurelia/templating@^0.13.1",
+      "bootstrap-less": "github:distros/bootstrap-less@^3.3.8",
       "babel": "npm:babel-core@^5.1.13",
       "babel-runtime": "npm:babel-runtime@^5.1.13",
       "clean-css": "npm:clean-css@^3.3.5",
