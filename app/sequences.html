@@ -1,0 +1,21 @@
+<template>
+  <require from="box"></require>
+  <section class="page runsequence au-animate container">
+<article class="text-center">
+<markdown>
+  
+# Sequences
+
+</markdown>
+    
+  
+  <a click.delegate="runEnterSequence()" class="btn">Run enter sequence</a>
+  
+  <a click.delegate="runLeaveSequence()" class="btn">Run leave sequence</a>
+  
+  <br/><br/>
+  
+  <box class="out" box.ref="box"></box>
+    </article>
+  </section>
+</template>

@@ -1,0 +1,36 @@
+<template>
+  <section class="page animate au-animate container">
+    <article>
+      <markdown>
+        
+        # Animate
+        
+        The animate method can be used to run execute animation at any time on an element.
+        
+      </markdown>
+        
+      <br/><br/>
+      
+      <div class="row">
+        
+        <div class="col-sm-6">
+          <animation-config animation-config.ref="animationConfig"></animation-config>
+        </div>
+        
+        <div class="col-sm-6">
+          
+          <div class="stage">
+            <a class="btn btn-primary" click.delegate="animate()">ANIMATE</a>
+            
+            <br/><br/><br/><br/>
+            
+            <div class="animTest out" ref="testElement"><img src="images/aurelia-logo.png" width="300px" /></div>
+          </div>
+          
+        </div>
+        
+      </div>
+    
+    </article>
+  </section>
+</template>

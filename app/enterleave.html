@@ -1,0 +1,41 @@
+<template>
+  <section class="page enterleave au-animate container">
+    <article>
+<markdown>
+
+# Enter / Leave
+
+
+<p class="text-center">
+Click on the ENTER and LEAVE buttons below to animate the test element.<br/>
+The settings for the animation can be customized to test various effects.<br/>
+</p>
+
+</markdown>
+      
+    <br/>
+      
+    <div class="row">
+      <div class="col-sm-6">
+        <h4>Enter animation</h4>
+        <animation-config effect="" duration="800" easing="spring" animation-config.ref="enterConfig" effect-filter="in" custom-effect='{"opacity":[1,0,"linear"],"translateX":[0,-200]}'></animation-config>
+      </div>
+      <div class="col-sm-6">
+        <h4>Leave animation</h4>
+        <animation-config effect="" duration="800" easing="easeOutQuad" animation-config.ref="leaveConfig" effect-filter="out" custom-effect='{"opacity":[0,1,"easeOutSine"],"translateX":[200,0]}'></animation-config>
+      </div>
+    </div>
+      
+    <br/><br/>
+    
+    <div class="stage">
+      <a class="btn btn-primary" click.delegate="enterAnim()">ENTER</a>
+      <a class="btn btn-primary" click.delegate="leaveAnim()">LEAVE</a>
+      <br/><br/><br/>
+      
+      <div class="animTest out" ref="testElement"><img src="images/aurelia-logo.png" width="300px" /></div>
+      <br/>
+    </div>
+    </article>
+  </section>
+</template>

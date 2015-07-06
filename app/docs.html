@@ -1,0 +1,275 @@
+<template>
+  <section class="au-animate page section-sidemenu">
+    
+    <aside class="au-animate" anim-enter="transition.slideLeftIn" anim-leave="transition.slideLeftOut" ref="aside">
+      
+      <header>
+        <a href="#/docs" smooth-scroll>Docs</a>
+      </header>
+
+      <nav class="sidemenu">
+        <ul class="list-group">
+          <li class="list-group-item"> <a href="#/docs/install" smooth-scroll>Install</a></li>
+          <li class="list-group-item"> <a href="#/docs/view-enter-leave" smooth-scroll>View enter/leave</a></li>
+          <li class="list-group-item"> <a href="#/docs/element-animations" smooth-scroll>Element animations</a></li>
+          <li class="list-group-item"> <a href="#/docs/effects" smooth-scroll>Effects</a></li>
+          <li class="list-group-item"> <a href="#/docs/custom-effects" smooth-scroll>Custom Effects</a></li>
+          <li class="list-group-item"> <a href="#/docs/sequences" smooth-scroll>Sequences</a></li>
+        </ul>
+      </nav>
+
+    </aside>
+    <article  class="au-animate" anim-enter="transition.slideLeftIn" anim-leave="transition.slideLeftOut" ref="article">
+
+<markdown>
+
+<h1 id="/docs">Velocity Animator</h1>
+
+<p class="lead text-center"> 
+  An implementation of the Aurelia base animator using <a href="http://velocityjs.org">Velocity</a>.
+</p>
+  
+  <br/>
+  
+<h2 id="/docs/install">Installation</h2>
+  
+Install the package into your project using JSPM.
+
+```javascript
+jspm install gooy/aurelia-animator-velocity
+```
+
+Register it as a plugin with aurelia inside your `main.js`.
+  
+```javascript
+aurelia.use.plugin('gooy/aurelia-animator-velocity')
+```
+
+Options can be specified while registering the plugin.  
+Have a look at the [velocity options](http://julian.com/research/velocity/#duration) for a complete list of options.
+
+The options used in the example below are the defaults.
+
+```javascript
+aurelia.use.plugin('gooy/aurelia-animator-velocity',instance=>{
+  instance.options.duration = 400;
+  instance.options.easing = "linear";
+
+  instance.enterAnimation = {properties:"fadeIn",options:{easing:"easeIn",duration:200}};
+  instance.leaveAnimation = {properties:"fadeOut",options:{easing:"easeIn",duration:200}};
+})
+```
+
+<h2 id="/docs/view-enter-leave">Use with markup</h2>
+
+If the firstChild of a ViewSlot has the `au-animate` class Aurelia will automatically execute the `enter` and `leave` animations on that element.
+
+for example:
+
+```markup
+<template>
+  <section class="au-animate">
+    ...
+  </section>
+</template>
+```
+
+By default the enter animation will use the `fadeIn` effect and the leave animation will use the `fadeOut` effect.  
+The defaults can be changed during plugin registration.
+
+Elements can specify an effect an extra options on a use-by-use basis by specifying
+the `anim-enter` and/or `anim-leave` attributes.
+
+```markup
+<section anim-enter="fadeIn" anim-leave="fadeOut"></section>
+```
+
+Options can also be specified using a json object after the effectName.
+
+```markup
+<section anim-enter="fadeIn;{duration:1000,easing:ease-out}" ></section>
+```
+
+Instead of using an effectName, it is also possible to specify properties that should be animated as a json object.
+
+```markup
+<section anim-enter="{opacity:0};{duration:1000,easing:ease-out}" ></section>
+```
+
+<h2 id="/docs/element-animations">Use with JavaScript</h2>
+
+To use enter/leave animations on any element the animator has to be invoked manually.  
+To do this inject it into your VM an call the enter/leave methods.
+
+```javascript
+import {VelocityAnimator} from "gooy/aurelia-animator-velocity";
+
+export class MyCustomElement{
+
+  static inject = [Element,VelocityAnimator];
+  constructor(element,animator) {
+    this.element = element;
+    this.animator = animator;
+  }
+
+  attached(){
+    //run enter animation on the element
+    this.animator.enter(this.element);
+
+    //run leave animation on the element
+    this.animator.leave(this.element);
+
+    //run an effect on the element
+    this.animator.animate(this.element,"callout.bounce");
+  }
+
+}
+```
+  
+The sidemenu on this page has links that enable smooth scrolling.
+The [aurelia-smooth-scroll](https://github.com/gooy/) plugin makes use of this animator to scroll the body smoothly to the target location.
+
+<h2 id="/docs/effects">Effects</h2>
+  
+### Default effects
+  
+- fadeIn
+- fadeOut
+- slideUp
+- slideDown
+  
+**Commands**
+  
+- scroll
+- stop
+- finish
+- reverse
+
+### Velocity UI pack
+
+By default only a `fadeIn` and `fadeOut` animation is included.  
+Adding the Velocity UI pack will give you access to all of the effects listed below.
+
+To include it make sure you have velocity installed or mapped in your config.js 
+and include the UI pack as follows (for example in the main.js):
+  
+```javascript
+import "velocity/velocity.ui";
+```
+
+### callouts
+
+- callout.bounce
+- callout.shake
+- callout.flash
+- callout.pulse
+- callout.swing
+- callout.tada
+
+### transitions
+
+- transition.fadeIn
+- transition.fadeOut
+- transition.flipXIn
+- transition.flipXOut
+- transition.flipYIn
+- transition.flipYOut
+- transition.flipBounceXIn
+- transition.flipBounceXOut
+- transition.flipBounceYIn
+- transition.flipBounceYOut
+- transition.swoopIn
+- transition.swoopOut
+- transition.whirlIn
+- transition.whirlOut
+- transition.shrinkIn
+- transition.shrinkOut
+- transition.expandIn
+- transition.expandOut
+- transition.bounceIn
+- transition.bounceOut
+- transition.bounceUpIn
+- transition.bounceUpOut
+- transition.bounceDownIn
+- transition.bounceDownOut
+- transition.bounceLeftIn
+- transition.bounceLeftOut
+- transition.bounceRightIn
+- transition.bounceRightOut
+- transition.slideUpIn
+- transition.slideUpOut
+- transition.slideDownIn
+- transition.slideDownOut
+- transition.slideLeftIn
+- transition.slideLeftOut
+- transition.slideRightIn
+- transition.slideRightOut
+- transition.slideUpBigIn
+- transition.slideUpBigOut
+- transition.slideDownBigIn
+- transition.slideDownBigOut
+- transition.slideLeftBigIn
+- transition.slideLeftBigOut
+- transition.slideRightBigIn
+- transition.slideRightBigOut
+- transition.perspectiveUpIn
+- transition.perspectiveUpOut
+- transition.perspectiveDownIn
+- transition.perspectiveDownOut
+- transition.perspectiveLeftIn
+- transition.perspectiveLeftOut
+- transition.perspectiveRightIn
+- transition.perspectiveRightOut
+
+
+<h2 id="/docs/custom-effects">Registering custom effects</h2>
+
+Custom effects can be registered by using the `registerEffect` method.
+
+```javascript
+animator.registerEffect("my_cool_effect",{
+  defaultDuration: 950,
+  calls: [
+    [ { rotateZ: 15 }, 0.20 ],
+    [ { rotateZ: -10 }, 0.20 ],
+    [ { rotateZ: 5 }, 0.20 ],
+    [ { rotateZ: -5 }, 0.20 ],
+    [ { rotateZ: 0 }, 0.20 ]
+  ]
+})
+```
+
+Check the [velocity documentation](http://julian.com/research/velocity/#uiPack) for more details.
+
+<h2 id="/docs/sequences">Running sequences</h2>
+
+```javascript
+animator.runSequence([
+  { e: element1, p: { translateX: 100 }, o: { duration: 1000 } },
+  { e: element2, p: { translateX: 200 }, o: { duration: 1000 } },
+  { e: element3, p: { translateX: 300 }, o: { duration: 1000 } }
+])
+```
+
+Check the [velocity documentation](http://julian.com/research/velocity/#uiPack) for more details.
+
+</markdown>
+
+    </article>
+  </section>
+</template>
+
+
+
+<template>
+  <section class="page section-sidemenu">
+    
+    <aside class="au-animate" anim-enter="transition.slideLeftIn" anim-leave="transition.slideLeftOut" ref="aside">
+      
+ 
+    </aside>
+    <article  class="au-animate" anim-enter="transition.slideLeftIn" anim-leave="transition.slideLeftOut" ref="article">
+
+    </article>
+  </section>
+</template>
