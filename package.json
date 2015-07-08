@@ -94,8 +94,10 @@
     "vinyl-paths": "^1.0.0"
   },
   "jspm": {
+    "main": "index",
+    "format": "amd",
     "directories": {
-      "lib": "dist/commonjs"
+      "lib": "dist/amd"
     },
     "dependencies": {
       "aurelia-templating": "github:aurelia/templating@^0.13.2",
