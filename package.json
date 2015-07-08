@@ -27,9 +27,7 @@
     "test": "npm run jshint",
     "jshint": "jshint src task test gulpfile.js"
   },
-  "dependencies": {
-
-  },
+  "dependencies": {},
   "devDependencies": {
     "jspm": "^0.15.7",
     "filesize": "^3.1.2",
@@ -100,7 +98,7 @@
       "lib": "dist/commonjs"
     },
     "dependencies": {
-      "aurelia-templating": "github:aurelia/templating@^0.13.1",
+      "aurelia-templating": "github:aurelia/templating@^0.13.2",
       "jsol": "github:daepark/JSOL@master",
       "velocity": "github:julianshapiro/velocity@^1.2.2"
     },
