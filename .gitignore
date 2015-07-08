@@ -4,14 +4,12 @@ node_modules
 
 # generated files #
 #######################
-dist/amd
-dist/system
-dist/es6
 
 demo/dist
 .publish
 deploy
 docs
+.bkp
 
 # NPM generated files #
 #######################

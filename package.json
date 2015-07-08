@@ -18,6 +18,7 @@
     "type": "git",
     "url": "git@github.com:gooy/aurelia-animator-velocity.git"
   },
+  "main": "dist/commonjs/index.js",
   "directories": {
     "lib": "src",
     "build": "dist"
@@ -27,15 +28,16 @@
     "jshint": "jshint src task test gulpfile.js"
   },
   "dependencies": {
+
+  },
+  "devDependencies": {
+    "jspm": "^0.15.7",
     "filesize": "^3.1.2",
     "gulp-consolidate": "^0.1.2",
     "gulp-git": "^1.2.4",
     "gulp-iconfont": "^3.0.2",
     "gulp-live-server": "0.0.22",
-    "lodash": "^3.10.0"
-  },
-  "devDependencies": {
-    "jspm": "^0.15.7",
+    "lodash": "^3.10.0",
     "compression": "^1.5.1",
     "npm-check-updates": "^1.5.1",
     "gulp-gh-pages": "^0.5.2",
@@ -77,6 +79,7 @@
     "jshint": "^2.8.0",
     "jshint-stylish": "^2.0.1",
     "jasmine-jquery": "^2.1.0",
+    "karma": "^0.12.28",
     "karma-babel-preprocessor": "^5.2.1",
     "karma-jasmine-jquery": "^0.1.1",
     "karma-chrome-launcher": "^0.2.0",
@@ -113,6 +116,7 @@
       "clean-css": "npm:clean-css@^3.3.5",
       "core-js": "npm:core-js@^0.9.4",
       "css": "github:systemjs/plugin-css@^0.1.9",
+      "gooy/aurelia-ace": "github:gooy/aurelia-markdown@^0.0.1",
       "gooy/aurelia-animator-velocity": "github:gooy/aurelia-animator-velocity@^0.0.3",
       "gooy/aurelia-markdown": "github:gooy/aurelia-markdown@^0.0.2",
       "gooy/aurelia-smooth-scroll": "github:gooy/aurelia-smooth-scroll@^0.0.2",
@@ -124,7 +128,7 @@
         "shim": {
           "velocity.ui": {
             "deps": [
-              "github:julianshapiro/velocity"
+              "velocity"
             ]
           }
         }

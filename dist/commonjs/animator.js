@@ -51,13 +51,6 @@ var VelocityAnimator = (function () {
 
       this.isAnimating = true;
 
-      var overrides = {
-        complete: function complete(el) {
-          this.isAnimating = false;
-          if (!silent) dispatch(el, 'animateDone');
-          if (options && options.complete) options.complete.apply(this, arguments);
-        }
-      };
       if (!element) return Promise.reject(new Error('invalid first argument'));
 
       if (typeof element === 'string') element = this.container.querySelectorAll(element);
@@ -70,12 +63,11 @@ var VelocityAnimator = (function () {
         nameOrProps = this.resolveEffectAlias(nameOrProps);
       }
 
-      var opts = Object.assign({}, this.options, options, overrides);
+      var opts = Object.assign({}, this.options, options);
       var p = (0, _velocity2['default'])(element, nameOrProps, opts).then(function (elements) {
         for (var i = 0, l = elements.length; i < l; i++) {
           var el = elements[i];
-          var evt = new CustomEvent(_aureliaTemplating.animationEvent['animateDone'], { bubbles: true, cancelable: true, detail: null });
-          el.dispatchEvent(evt);
+          dispatch(el, 'animateDone');
         }
       });
 
