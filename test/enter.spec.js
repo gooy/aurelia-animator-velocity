@@ -52,7 +52,7 @@ describe('animator-velocity', () => {
       let l1 = document.addEventListener(animationEvent.enterBegin, (payload) => enterBeginCalled = true),
         l2 = document.addEventListener(animationEvent.enterDone, () => enterDoneCalled = true);
 
-      animator.enter(elem,"fadeIn").then( () => {
+      animator.enter(elem).then( () => {
         expect(enterDoneCalled).toBe(true);
         document.removeEventListener(animationEvent.enterDone, l2, false);
         done();
@@ -61,6 +61,21 @@ describe('animator-velocity', () => {
       expect(enterBeginCalled).toBe(true);
       document.removeEventListener(animationEvent.enterBegin, l1, false);
     });
+
+    /*it('publishes an enterBegin and enterDone event when using custom effects', (done) => {
+      let enterBeginCalled = false, enterDoneCalled = false;
+      let l1 = document.addEventListener(animationEvent.enterBegin, (payload) => enterBeginCalled = true),
+        l2 = document.addEventListener(animationEvent.enterDone, () => enterDoneCalled = true);
+
+      animator.enter(elem,"fadeIn").then( () => {
+        expect(enterDoneCalled).toBe(true);
+        document.removeEventListener(animationEvent.enterDone, l2, false);
+        done();
+      });
+
+      expect(enterBeginCalled).toBe(true);
+      document.removeEventListener(animationEvent.enterBegin, l1, false);
+    });*/
 
   });
 

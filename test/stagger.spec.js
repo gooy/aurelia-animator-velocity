@@ -37,22 +37,22 @@ describe('animator-velocity', () => {
       animator.stop(elem,true);
     });
 
-    /*it('publishes stagger next events', (done) => {
-      let proms = []
-        , eventCalled = false;
+    it('publishes an animationEnd event when all elements are done animating', (done) => {
+      let eventCalled = false;
 
-      var listener = document.addEventListener(animationEvent.staggerNext, () => eventCalled = true);
+      var listener = document.addEventListener(animationEvent.animateDone, () => eventCalled = true);
+      var elems = $('#test-stagger').eq(0)[0].children;
 
-      elems.each( (idx, elem) => {
-        proms.push(sut.enter(elem));
-      });
-
-      Promise.all(proms).then( () => {
+      animator.animate(elems,"fadeIn",{stagger:50}).then( () => {
         expect(eventCalled).toBe(true);
+        for(var i = 0, l = elems.length; i < l; i++){
+          var elem = elems[i];
+          expect(elem.style.opacity).toBe('1');
+        }
         document.removeEventListener(animationEvent.staggerNext, listener);
         done();
       });
-    });*/
+    });
 
   });
 

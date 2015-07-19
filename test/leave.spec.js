@@ -52,7 +52,7 @@ describe('animator-velocity', () => {
       let l1 = document.addEventListener(animationEvent.leaveBegin, (payload) => leaveBeginCalled = true),
         l2 = document.addEventListener(animationEvent.leaveDone, () => leaveDoneCalled = true);
 
-      animator.leave(elem,"fadeIn").then( () => {
+      animator.leave(elem).then( () => {
         expect(leaveDoneCalled).toBe(true);
         document.removeEventListener(animationEvent.leaveDone, l2, false);
         done();
@@ -61,6 +61,21 @@ describe('animator-velocity', () => {
       expect(leaveBeginCalled).toBe(true);
       document.removeEventListener(animationEvent.leaveBegin, l1, false);
     });
+
+    /*it('publishes an leaveBegin and leaveDone event when using custom effects', (done) => {
+      let leaveBeginCalled = false, leaveDoneCalled = false;
+      let l1 = document.addEventListener(animationEvent.leaveBegin, (payload) => leaveBeginCalled = true),
+        l2 = document.addEventListener(animationEvent.leaveDone, () => leaveDoneCalled = true);
+
+      animator.leave(elem,"fadeOut").then( () => {
+        expect(leaveDoneCalled).toBe(true);
+        document.removeEventListener(animationEvent.leaveDone, l2, false);
+        done();
+      });
+
+      expect(leaveBeginCalled).toBe(true);
+      document.removeEventListener(animationEvent.leaveBegin, l1, false);
+    });*/
 
   });
 

@@ -23,8 +23,8 @@ export class VelocityAnimator {
   isAnimating = false;
   sequenceRunning = false;
 
-  enterAnimation = {properties:"fadeIn",options:{easing:"ease-in",duration:200}};
-  leaveAnimation = {properties:"fadeOut",options:{easing:"ease-in",duration:200}};
+  enterAnimation = {properties:":enter",options:{easing:"ease-in",duration:200}};
+  leaveAnimation = {properties:":leave",options:{easing:"ease-in",duration:200}};
 
   /**
    * Array of easing names that can be used with this animator
@@ -61,16 +61,17 @@ export class VelocityAnimator {
    * @returns {Promise} resolved when animation is complete
    */
   animate(element,nameOrProps,options,silent) {
-
+    console.log('animate');
     this.isAnimating = true;
 
-    /*let overrides = {
+    let overrides = {
       complete:function(el){
+        console.log('DONE');
         this.isAnimating = false;
-        //if(!silent) dispatch(el,"animateDone");
+        if(!silent) dispatch(el,"animateDone");
         if(options && options.complete) options.complete.apply(this,arguments);
       }
-    };*/
+    };
     if(!element) return Promise.reject(new Error("invalid first argument"));
 
     //resolve selectors
@@ -87,13 +88,19 @@ export class VelocityAnimator {
     }
 
     //try to run the animation
-    var opts =Object.assign({},this.options,options);
+    var opts = Object.assign({},this.options,options,overrides);
+    console.log('opts', opts);
     var p = Velocity(element, nameOrProps, opts).then(elements=>{
+      console.log('DONE2');
+      return elements;
+    });
+  /*.then(elements=>{
       for(var i = 0, l = elements.length; i < l; i++){
         var el = elements[i];
         dispatch(el,"animateDone");
       }
-    });
+      return elements;
+    });*/
 
     //reject the promise if Velocity didn't return a Promise due to invalid arguments
     if(!p) return Promise.reject(new Error("invalid element used for animator.animate"));
@@ -255,8 +262,7 @@ export class VelocityAnimator {
    * @returns {Promise} resolved when animation is complete
    */
   enter(element,effectName,options) {
-
-    return this.stop(element,true)._runElementAnimation(element,effectName||':enter',options,effectName||'enter');
+    return this.stop(element,true)._runElementAnimation(element,effectName||':enter',options,'enter');
   }
 
   /**
@@ -267,7 +273,7 @@ export class VelocityAnimator {
    * @returns {Promise} resolved when animation is complete
    */
   leave(element,effectName,options) {
-    return this.stop(element,true)._runElementAnimation(element,effectName||':leave',options,effectName||'leave').then(elements=>{
+    return this.stop(element,true)._runElementAnimation(element,effectName||':leave',options,'leave').then(elements=>{
       /*for(var i = 0, l = elements.length; i < l; i++){
         var el = elements[i];
         //el.style.transform = "none";

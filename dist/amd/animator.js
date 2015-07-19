@@ -25,8 +25,8 @@ define(['exports', 'velocity', 'velocity/velocity.ui', 'jsol', 'aurelia-templati
       };
       this.isAnimating = false;
       this.sequenceRunning = false;
-      this.enterAnimation = { properties: 'fadeIn', options: { easing: 'ease-in', duration: 200 } };
-      this.leaveAnimation = { properties: 'fadeOut', options: { easing: 'ease-in', duration: 200 } };
+      this.enterAnimation = { properties: ':enter', options: { easing: 'ease-in', duration: 200 } };
+      this.leaveAnimation = { properties: ':leave', options: { easing: 'ease-in', duration: 200 } };
       this.easings = [];
       this.effects = {
         ':enter': 'fadeIn',
@@ -41,9 +41,17 @@ define(['exports', 'velocity', 'velocity/velocity.ui', 'jsol', 'aurelia-templati
     _createClass(VelocityAnimator, [{
       key: 'animate',
       value: function animate(element, nameOrProps, options, silent) {
-
+        console.log('animate');
         this.isAnimating = true;
 
+        var overrides = {
+          complete: function complete(el) {
+            console.log('DONE');
+            this.isAnimating = false;
+            if (!silent) dispatch(el, 'animateDone');
+            if (options && options.complete) options.complete.apply(this, arguments);
+          }
+        };
         if (!element) return Promise.reject(new Error('invalid first argument'));
 
         if (typeof element === 'string') element = this.container.querySelectorAll(element);
@@ -56,12 +64,11 @@ define(['exports', 'velocity', 'velocity/velocity.ui', 'jsol', 'aurelia-templati
           nameOrProps = this.resolveEffectAlias(nameOrProps);
         }
 
-        var opts = Object.assign({}, this.options, options);
+        var opts = Object.assign({}, this.options, options, overrides);
+        console.log('opts', opts);
         var p = (0, _Velocity['default'])(element, nameOrProps, opts).then(function (elements) {
-          for (var i = 0, l = elements.length; i < l; i++) {
-            var el = elements[i];
-            dispatch(el, 'animateDone');
-          }
+          console.log('DONE2');
+          return elements;
         });
 
         if (!p) return Promise.reject(new Error('invalid element used for animator.animate'));
@@ -164,18 +171,17 @@ define(['exports', 'velocity', 'velocity/velocity.ui', 'jsol', 'aurelia-templati
     }, {
       key: 'enter',
       value: function enter(element, effectName, options) {
-
-        return this.stop(element, true)._runElementAnimation(element, effectName || ':enter', options, effectName || 'enter');
+        return this.stop(element, true)._runElementAnimation(element, effectName || ':enter', options, 'enter');
       }
     }, {
       key: 'leave',
       value: function leave(element, effectName, options) {
-        return this.stop(element, true)._runElementAnimation(element, effectName || ':leave', options, effectName || 'leave').then(function (elements) {});
+        return this.stop(element, true)._runElementAnimation(element, effectName || ':leave', options, 'leave').then(function (elements) {});
       }
     }, {
       key: '_runElements',
       value: function _runElements(element, name) {
-        var options = arguments[2] === undefined ? {} : arguments[2];
+        var options = arguments.length <= 2 || arguments[2] === undefined ? {} : arguments[2];
 
         if (!element) return Promise.reject(new Error('invalid first argument'));
 
@@ -193,8 +199,8 @@ define(['exports', 'velocity', 'velocity/velocity.ui', 'jsol', 'aurelia-templati
         var _this3 = this,
             _arguments = arguments;
 
-        var options = arguments[2] === undefined ? {} : arguments[2];
-        var eventName = arguments[3] === undefined ? undefined : arguments[3];
+        var options = arguments.length <= 2 || arguments[2] === undefined ? {} : arguments[2];
+        var eventName = arguments.length <= 3 || arguments[3] === undefined ? undefined : arguments[3];
 
         if (!element) return Promise.reject(new Error('invalid first argument'));
 

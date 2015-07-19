@@ -11,7 +11,7 @@ var LessPluginAutoPrefix = require('less-plugin-autoprefix');
 var LessPluginCleanCSS = require('less-plugin-clean-css');
 
 var cleancss = new LessPluginCleanCSS({ advanced: true });
-var autoprefix= new LessPluginAutoPrefix({ browsers: ["last 2 versions"] });
+var autoprefix= new LessPluginAutoPrefix({ browsers: ["last 3 versions"] });
 
 var dirs = gulp.pkg.demo.directories;
 
@@ -40,17 +40,19 @@ gulp.task('demo-less_bootstrap-prod', function(){ return compileFile(dirs.lib+'/
  */
 function compileFile(input, output, options){
 
+  //console.log(resolve.npm('aurelia-docs-style'));
+
   return gulp.src(input)
       //.pipe(sourcemaps.init())
     .pipe(less(deepExtend({
         filename: input,
         paths: [
           '.',
+          //path.dirname(path.dirname(resolve.npm('aurelia-docs-style')[0]))+"/less",
+          'node_modules/aurelia-docs-style/less',
           path.dirname(path.dirname(resolve.npm('bootstrap-less')[0]))
-        ],
-        plugins: [cleancss,autoprefix]
+        ]
       }, options)))
-
     .pipe(autoprefixer({browsers: ['last 3 versions']}))
     .pipe(minify({restructuring: true, keepBreaks: !options.compress}))
     //.pipe(sourcemaps.write())

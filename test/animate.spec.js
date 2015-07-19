@@ -11,13 +11,11 @@ describe('the animate method', () => {
 
   beforeEach(() => {
     //stop all animations running on the test element
-    if(animator) animator.stop(elem,true);
 
     loadFixtures('animation.html');
     elem = $('#test-simple').eq(0)[0];
     container = $("#animation").eq(0)[0];
     animator = new VelocityAnimator(container);
-
   });
 
   it('returns a promise', () => {
@@ -25,7 +23,7 @@ describe('the animate method', () => {
     expect(result.then).toBeDefined();
   });
 
-  it('sets isAnimating to true when the animation starts and sets it to false when the animation is done', () => {
+  it('sets isAnimating to true when the animation starts and sets it to false when the animation is done', (done) => {
     expect(animator.isAnimating).toBe(false);
     let result = animator.animate(elem,"fadeIn").then(()=>{
       expect(animator.isAnimating).toBe(false);
@@ -47,7 +45,7 @@ describe('the animate method', () => {
 
     expect(elem.style.opacity).toBe('');
 
-    let result = animator.animate(elems,"fadeIn").then(()=>{
+    let result = animator.animate(elem,"fadeIn").then(()=>{
       expect(elem.style.opacity).toBe('1');
       done();
     }).catch((error) => console.log(error));
@@ -135,9 +133,6 @@ describe('the animate method', () => {
     animator.animate(null,[1]).catch((e)=>{ expect(e instanceof Error).toBe(true); done(); });
   });
 
-  /*it('resolves the promise with an Array when first argument is a selector', (done) => {
-    animator.animate("test",{}).catch((e)=>{console.log('e', e); expect(e instanceof Error).toBe(true); done(); });
-  });*/
   it('resolves the promise with a NodeList when first argument is a selector that doesnt match anything', (done) => {
     animator.animate("test","fadeIn").then((result)=>{
       expect(result instanceof NodeList).toBe(true);
@@ -166,7 +161,9 @@ describe('the animate method', () => {
   });
 
   it('resolves the promise with a NodeList when first argument is a NodeList', (done) => {
-    animator.animate(container.querySelectorAll('.group1'),"fadeIn").then(result=>{ expect(result instanceof NodeList).toBe(true); done(); });
+    animator.animate(container.querySelectorAll('.group1'),"fadeIn").then(result=>{
+      expect(result instanceof NodeList).toBe(true); done();
+    });
   });
 
   it('resolves the promise with an Array when first argument is an Array', (done) => {

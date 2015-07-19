@@ -54,6 +54,7 @@ export class EnterLeavePage{
   }
 
   attached(){
+    this.testElement.parentNode.removeChild(this.testElement);
     this.ea.publish("page:ready");
     setTimeout(()=>{
       this.ea.publish("page:ready");
@@ -61,11 +62,13 @@ export class EnterLeavePage{
   }
 
   enterAnim(){
-    this.animator.enter(this.testElement,this.enterConfig.getEffect(),{easing:this.enterConfig.easing,duration:parseInt(this.enterConfig.duration)});
+    //this.animator.enter(this.testElement,this.enterConfig.getEffect(),{easing:this.enterConfig.easing,duration:parseInt(this.enterConfig.duration)});
+    this.animStage.appendChild(this.testElement);
   }
 
   leaveAnim(){
-    this.animator.leave(this.testElement,this.leaveConfig.getEffect(),{easing:this.leaveConfig.easing,duration:parseInt(this.leaveConfig.duration)});
+    //this.animator.leave(this.testElement,this.leaveConfig.getEffect(),{easing:this.leaveConfig.easing,duration:parseInt(this.leaveConfig.duration)});
+    this.animStage.removeChild(this.testElement);
   }
 
   selectedEnterAnimationChanged(newValue,oldValue){
@@ -77,5 +80,6 @@ export class EnterLeavePage{
     this.animator.effects[":leave"] = newValue;
     this.updateLeaveAnimation();
   }
+
 
 }

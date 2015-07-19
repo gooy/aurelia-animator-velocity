@@ -11,7 +11,7 @@ The enter and leave animations are executed on all elements that have the `au-an
 Click on the ENTER and LEAVE buttons below to animate the test element.<br/>
 The settings for the animation can be customized to test various effects.<br/>
 </p>
-
+  
 </markdown>
       
     <br/>
@@ -34,7 +34,11 @@ The settings for the animation can be customized to test various effects.<br/>
       <a class="btn btn-primary" click.delegate="leaveAnim()">LEAVE</a>
       <br/><br/><br/>
       
-      <div class="animTest out" ref="testElement"><img src="images/aurelia-logo.png" width="300px" /></div>
+      <div id="anim-stage" ref="animStage">
+      <div class="aurelia-animate animTest out" ref="testElement">
+        <img src="images/aurelia-logo.png" width="300px" />
+      </div>
+        </div>
       <br/>
     </div>
     </article>
