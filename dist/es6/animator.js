@@ -21,7 +21,6 @@ export class VelocityAnimator {
   };
 
   isAnimating = false;
-  sequenceRunning = false;
 
   enterAnimation = {properties:":enter",options:{easing:"ease-in",duration:200}};
   leaveAnimation = {properties:":leave",options:{easing:"ease-in",duration:200}};
@@ -61,13 +60,11 @@ export class VelocityAnimator {
    * @returns {Promise} resolved when animation is complete
    */
   animate(element,nameOrProps,options,silent) {
-    console.log('animate');
     this.isAnimating = true;
-
+    let _this = this;
     let overrides = {
       complete:function(el){
-        console.log('DONE');
-        this.isAnimating = false;
+        _this.isAnimating = false;
         if(!silent) dispatch(el,"animateDone");
         if(options && options.complete) options.complete.apply(this,arguments);
       }
@@ -89,25 +86,12 @@ export class VelocityAnimator {
 
     //try to run the animation
     var opts = Object.assign({},this.options,options,overrides);
-    console.log('opts', opts);
-    var p = Velocity(element, nameOrProps, opts).then(elements=>{
-      console.log('DONE2');
-      return elements;
-    });
-  /*.then(elements=>{
-      for(var i = 0, l = elements.length; i < l; i++){
-        var el = elements[i];
-        dispatch(el,"animateDone");
-      }
-      return elements;
-    });*/
+    var p = Velocity(element, nameOrProps, opts);
 
     //reject the promise if Velocity didn't return a Promise due to invalid arguments
     if(!p) return Promise.reject(new Error("invalid element used for animator.animate"));
     return p;
   }
-
-
 
   /**
    * Stop an animation
@@ -121,29 +105,6 @@ export class VelocityAnimator {
     Velocity(element,'stop',clearQueue);
     this.isAnimating = false;
     return this;
-  }
-
-  /**
-   * Move to end of animation and stop
-   *
-   * @param element {HTMLElement}   Element to animate
-   *
-   * @returns {Animator} return this instance for chaining
-   */
-  finish(element,clearQueue){
-    Velocity(element, 'finish', clearQueue)
-    this.isAnimating = false;
-    return this;
-    /*return new Promise((resolve, reject) => {
-      let result;
-      try{ result = ; }catch(e){reject(e)}
-
-      //to finish an animation, velocity changes its duration to 1ms , so we need to wait 2 ms to get the result
-      //note waiting 2 ms doesnt seem to work most of the time , needs to be longer
-      setTimeout(()=>{
-        resolve();
-      },10);
-    });*/
   }
 
   /**
@@ -274,11 +235,6 @@ export class VelocityAnimator {
    */
   leave(element,effectName,options) {
     return this.stop(element,true)._runElementAnimation(element,effectName||':leave',options,'leave').then(elements=>{
-      /*for(var i = 0, l = elements.length; i < l; i++){
-        var el = elements[i];
-        //el.style.transform = "none";
-        el.removeAttribute("style");
-      }*/
     });
   }
 
@@ -292,7 +248,6 @@ export class VelocityAnimator {
 
     //if nothing was found or no element was passed resolve the promise immediatly
     if(!element || element.length === 0) return Promise.resolve(element);
-
 
     for (var i = 0; i < element.length; i++) {
       this._runElementAnimation(element[i],name,options);
@@ -319,22 +274,15 @@ export class VelocityAnimator {
     if(!element) return Promise.reject(new Error("invalid first argument"));
 
     //resolve selectors
-    //if(typeof element === "string") element = this.container.querySelectorAll(element);
+    if(typeof element === "string") element = this.container.querySelectorAll(element);
 
     //if nothing was found or no element was passed resolve the promise immediatly
     if(!element || element.length === 0) return Promise.resolve(element);
 
-    let properties;
-    //parse animation properties for this element if none were found
-    //if(!element.animations)
-    this.parseAttributes(element);
-
-    //get nameOrProps and options from the element's attributes if specified
+    //parse animation properties
+    if(!element.animations) this.parseAttributes(element);
 
     if(eventName) dispatch(element,eventName+"Begin");
-
-    //skip if no enter animation was specified
-    //if(!properties) return Promise.resolve(false);
 
     let overrides = {
       complete:elements=>{
@@ -386,10 +334,6 @@ export class VelocityAnimator {
       options = JSOL.parse(options);
     }
     return {properties,options};
-  }
-
-  resolveElement(){
-
   }
 
   ensureList(element){

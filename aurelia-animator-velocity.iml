@@ -4,6 +4,8 @@
     <exclude-output />
     <content url="file://$MODULE_DIR$">
       <sourceFolder url="file://$MODULE_DIR$/test" isTestSource="true" />
+      <excludeFolder url="file://$MODULE_DIR$/.publish" />
+      <excludeFolder url="file://$MODULE_DIR$/deploy" />
       <excludeFolder url="file://$MODULE_DIR$/dist" />
       <excludeFolder url="file://$MODULE_DIR$/jspm_packages" />
       <excludeFolder url="file://$MODULE_DIR$/node_modules" />

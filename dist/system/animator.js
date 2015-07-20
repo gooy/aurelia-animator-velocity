@@ -29,7 +29,6 @@ System.register(['velocity', 'velocity/velocity.ui', 'jsol', 'aurelia-templating
             easing: 'linear'
           };
           this.isAnimating = false;
-          this.sequenceRunning = false;
           this.enterAnimation = { properties: ':enter', options: { easing: 'ease-in', duration: 200 } };
           this.leaveAnimation = { properties: ':leave', options: { easing: 'ease-in', duration: 200 } };
           this.easings = [];
@@ -46,13 +45,11 @@ System.register(['velocity', 'velocity/velocity.ui', 'jsol', 'aurelia-templating
         _createClass(VelocityAnimator, [{
           key: 'animate',
           value: function animate(element, nameOrProps, options, silent) {
-            console.log('animate');
             this.isAnimating = true;
-
+            var _this = this;
             var overrides = {
               complete: function complete(el) {
-                console.log('DONE');
-                this.isAnimating = false;
+                _this.isAnimating = false;
                 if (!silent) dispatch(el, 'animateDone');
                 if (options && options.complete) options.complete.apply(this, arguments);
               }
@@ -70,11 +67,7 @@ System.register(['velocity', 'velocity/velocity.ui', 'jsol', 'aurelia-templating
             }
 
             var opts = Object.assign({}, this.options, options, overrides);
-            console.log('opts', opts);
-            var p = Velocity(element, nameOrProps, opts).then(function (elements) {
-              console.log('DONE2');
-              return elements;
-            });
+            var p = Velocity(element, nameOrProps, opts);
 
             if (!p) return Promise.reject(new Error('invalid element used for animator.animate'));
             return p;
@@ -83,13 +76,6 @@ System.register(['velocity', 'velocity/velocity.ui', 'jsol', 'aurelia-templating
           key: 'stop',
           value: function stop(element, clearQueue) {
             Velocity(element, 'stop', clearQueue);
-            this.isAnimating = false;
-            return this;
-          }
-        }, {
-          key: 'finish',
-          value: function finish(element, clearQueue) {
-            Velocity(element, 'finish', clearQueue);
             this.isAnimating = false;
             return this;
           }
@@ -128,35 +114,35 @@ System.register(['velocity', 'velocity/velocity.ui', 'jsol', 'aurelia-templating
         }, {
           key: 'runSequence',
           value: function runSequence(sequence) {
-            var _this = this;
+            var _this2 = this;
 
             dispatch(window, 'sequenceBegin');
             return new Promise(function (resolve, reject) {
-              _this.sequenceReject = resolve;
+              _this2.sequenceReject = resolve;
               var last = sequence[sequence.length - 1];
               last.options = last.options || last.o || {};
               last.options.complete = function () {
-                if (!_this.sequenceReject) return;
-                _this.sequenceReject = undefined;
+                if (!_this2.sequenceReject) return;
+                _this2.sequenceReject = undefined;
                 dispatch(window, 'sequenceDone');
                 resolve();
               };
               try {
                 Velocity.RunSequence(sequence);
               } catch (e) {
-                _this.stopSequence(sequence);
-                _this.sequenceReject(e);
+                _this2.stopSequence(sequence);
+                _this2.sequenceReject(e);
               }
             });
           }
         }, {
           key: 'stopSequence',
           value: function stopSequence(sequence) {
-            var _this2 = this;
+            var _this3 = this;
 
             sequence.map(function (item) {
               var el = item.e || item.element || item.elements;
-              _this2.stop(el, true);
+              _this3.stop(el, true);
             });
             if (this.sequenceReject) {
               this.sequenceReject();
@@ -201,7 +187,7 @@ System.register(['velocity', 'velocity/velocity.ui', 'jsol', 'aurelia-templating
         }, {
           key: '_runElementAnimation',
           value: function _runElementAnimation(element, name) {
-            var _this3 = this,
+            var _this4 = this,
                 _arguments = arguments;
 
             var options = arguments.length <= 2 || arguments[2] === undefined ? {} : arguments[2];
@@ -209,19 +195,19 @@ System.register(['velocity', 'velocity/velocity.ui', 'jsol', 'aurelia-templating
 
             if (!element) return Promise.reject(new Error('invalid first argument'));
 
+            if (typeof element === 'string') element = this.container.querySelectorAll(element);
+
             if (!element || element.length === 0) return Promise.resolve(element);
 
-            var properties = undefined;
-
-            this.parseAttributes(element);
+            if (!element.animations) this.parseAttributes(element);
 
             if (eventName) dispatch(element, eventName + 'Begin');
 
             var overrides = {
               complete: function complete(elements) {
-                _this3.isAnimating = false;
+                _this4.isAnimating = false;
                 if (eventName) dispatch(element, eventName + 'Done');
-                if (options && options.complete) options.complete.apply(_this3, _arguments);
+                if (options && options.complete) options.complete.apply(_this4, _arguments);
               }
             };
 
@@ -257,9 +243,6 @@ System.register(['velocity', 'velocity/velocity.ui', 'jsol', 'aurelia-templating
             }
             return { properties: properties, options: options };
           }
-        }, {
-          key: 'resolveElement',
-          value: function resolveElement() {}
         }, {
           key: 'ensureList',
           value: function ensureList(element) {
