@@ -78,4 +78,35 @@ describe('animator-velocity', () => {
 
   });
 
+  describe('unregisterEffect function', () => {
+    let elem;
+    beforeEach(() => {
+      loadFixtures('animation.html');
+      elem = $('#test-simple').eq(0)[0];
+      animator.stop(elem,true);
+    });
+
+    it('returns the animator instance for a fluent api', () => {
+      let result = animator.unregisterEffect(elem);
+      expect(result).toBe(animator);
+    });
+
+    it('unregisters effects', () => {
+      var props = {left:100};
+      animator.registerEffect(":newEffect","fadeIn");
+      expect(animator.effects['newEffect'] !== undefined).toBe(true);
+      animator.unregisterEffect("newEffect");
+      expect(animator.effects['newEffect'] === undefined).toBe(true);
+    });
+
+    it('unregisters aliases', () => {
+      var props = {left:100};
+      animator.registerEffect(":alias","fadeIn");
+      expect(animator.effects[':alias'] !== undefined).toBe(true);
+      animator.unregisterEffect(":alias");
+      expect(animator.effects[':alias'] === undefined).toBe(true);
+    });
+
+  });
+
 });

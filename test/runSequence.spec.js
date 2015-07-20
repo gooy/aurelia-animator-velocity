@@ -42,7 +42,7 @@ describe('animator-velocity', () => {
       expect(result.then).toBeDefined();
     });
 
-    it('executes animations one after another', () => {
+    it('executes animations one after another', (done) => {
       animator.runSequence(testSequence).then( () => {
         expect(seq.children[0].style.opacity).toBe('1');
         expect(seq.children[0].style.opacity).toBe('1');
@@ -76,7 +76,7 @@ describe('animator-velocity', () => {
       animator.runSequence(null).catch((e)=>{ expect(e instanceof Error).toBe(true); done(); });
     });
 
-   /* it('rejects the promise when a string is passed', (done) => {
+    it('rejects the promise when a string is passed', (done) => {
       animator.runSequence("test").catch((e)=>{ expect(e instanceof Error).toBe(true); done(); });
     });
 
@@ -98,7 +98,7 @@ describe('animator-velocity', () => {
 
     it('rejects the promise when a number is passed', (done) => {
       animator.runSequence(5).catch((e)=>{ expect(e instanceof Error).toBe(true); done(); });
-    });*/
+    });
 
 
   });
